@@ -1,0 +1,39 @@
+<html>
+<head>
+<script type="text/javascript" src="https://get.goXTK.com/xtk_edge.js"></script>
+
+<style>
+html, body { 
+  background-color:#000;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden !important;  
+}
+</style>
+
+<script>
+
+  window.onload = function() {
+
+    r = new X.renderer2D();
+    r.orientation = 'x';
+    r.init();
+
+    v = new X.volume();
+    v.file = 'p.nii.gz';
+
+    r.add(v);
+
+    r.render();
+
+
+  }
+
+</script>
+
+</head>
+
+<body></body>
+
+</html>
