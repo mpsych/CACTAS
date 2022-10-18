@@ -12,6 +12,10 @@ H.Viewer = function(element) {
   //dissable crosshair
   nv.setCrosshairColor([0, 0, 0, 0])
 
+  // TODO zoom?
+  // nv.setSliceMM = true;
+  // nv.opts.dragMode = nv.dragModes.pan;
+
   this.nv = nv;
 
 };
