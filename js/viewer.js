@@ -13,8 +13,8 @@ H.Viewer = function(element) {
   nv.setCrosshairColor([0, 0, 0, 0])
 
   // TODO zoom?
-  // nv.setSliceMM = true;
-  // nv.opts.dragMode = nv.dragModes.pan;
+  nv.setSliceMM = true;
+  nv.opts.dragMode = nv.dragModes.pan;
 
   this.nv = nv;
 
