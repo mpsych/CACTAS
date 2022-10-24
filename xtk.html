@@ -1,6 +1,12 @@
 <html>
 <head>
-<script type="text/javascript" src="https://get.goXTK.com/xtk_edge.js"></script>
+<script type="text/javascript" src="https://get.goXTK.com/xtk11preview.js"></script>
+
+<!-- for local debugging only -->
+<!-- <script type="text/javascript" src="../get/xtk11preview.js"></script> -->
+<!-- <script type="text/javascript" src="../X/lib/google-closure-library/closure/goog/base.js"></script> -->
+<!-- <script type="text/javascript" src="../X/xtk-deps.js"></script> -->
+<!-- for local debugging only -->
 
 <style>
 html, body { 
@@ -14,21 +20,113 @@ html, body {
 
 <script>
 
+  //<!-- for local debugging only -->
+  // goog.require('X.renderer2D');
+  // goog.require('X.volume');
+  //<!-- for local debugging only -->
+
   window.onload = function() {
 
     r = new X.renderer2D();
-    r.orientation = 'x';
+    r.orientation = 'y';
     r.init();
 
     v = new X.volume();
-    v.file = 'p.nii.gz';
+    // v.file = 'p.nii.gz';
+    v.file = 'avf.nrrd';
 
     r.add(v);
 
     r.render();
 
+    current_label = 1;
+
+    r.onShowtime = function() {
+
+      v.createEmptyLabelMap();
+      v.labelmap.opacity = 0.7;
+
+      r.interactor.onMouseMove = function(e) {
+        
+        if (!e.ctrlKey) return;
+
+        e.cancel = true; // no window/level adjustment
+
+        ijk = r.xy2ijk(e.clientX, e.clientY)
+        if (!ijk) return;
+
+        // console.log(ijk[1]);
+        
+        var i = Math.max(0, ijk[1][0].toFixed(0));
+        var j = Math.max(0, ijk[1][1].toFixed(0));
+        var k = Math.max(0, ijk[1][2].toFixed(0));
+
+        v.labelmap.setPixel(i, j, k, current_label);
+
+      }
+
+      r.interactor.onMouseUp = function(e) {
+
+        v.refresh(); // only now redraw
+
+      }
+
+    }
+
 
   }
+
+
+// function createLabel(volume) {
+
+//   var dimx = volume._dimensions[0];
+//   var dimy = volume._dimensions[1];
+//   var dimz = volume._dimensions[2];
+
+//   MRI = volume._info;
+
+//   empty_label_data = new Int16Array(MRI.data.length);
+//   for (var i = 0; i< 400; i++) {
+//     empty_label_data[i] = 1;
+//   }
+
+//   for (var i = 400; i<800; i+=4) { 
+
+
+// empty_label_data[i] = 2; 
+// empty_label_data[i+1] = 2;
+// empty_label_data[i+2] = 2
+// empty_label_data[i+3] = 2
+
+// }
+
+  
+
+//   MRI.data = empty_label_data;
+
+//   volume.labelmap._dimensions = [dimx, dimy, dimz];
+//   volume.labelmap._lowerThreshold = 0;
+//   volume.labelmap._upperThreshold = 255;
+//   volume.labelmap._min = 0;
+//   volume.labelmap._max = 255;
+
+//   volume.labelmap.create_(MRI);
+
+//   volume.labelmap.colortable.loadDefault();
+
+
+
+//   var parser = new X.parser();
+//   volume.labelmap._image = parser.reslice(volume.labelmap);
+    
+//   volume.hasLabelMap = true;
+
+//   volume.labelmap._dirty = true;
+
+//   volume.modified();
+  
+//   // losp_updateCurrent(volume._labelmap);
+// }
 
 </script>
 
