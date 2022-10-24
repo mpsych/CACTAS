@@ -77,57 +77,6 @@ html, body {
   }
 
 
-// function createLabel(volume) {
-
-//   var dimx = volume._dimensions[0];
-//   var dimy = volume._dimensions[1];
-//   var dimz = volume._dimensions[2];
-
-//   MRI = volume._info;
-
-//   empty_label_data = new Int16Array(MRI.data.length);
-//   for (var i = 0; i< 400; i++) {
-//     empty_label_data[i] = 1;
-//   }
-
-//   for (var i = 400; i<800; i+=4) { 
-
-
-// empty_label_data[i] = 2; 
-// empty_label_data[i+1] = 2;
-// empty_label_data[i+2] = 2
-// empty_label_data[i+3] = 2
-
-// }
-
-  
-
-//   MRI.data = empty_label_data;
-
-//   volume.labelmap._dimensions = [dimx, dimy, dimz];
-//   volume.labelmap._lowerThreshold = 0;
-//   volume.labelmap._upperThreshold = 255;
-//   volume.labelmap._min = 0;
-//   volume.labelmap._max = 255;
-
-//   volume.labelmap.create_(MRI);
-
-//   volume.labelmap.colortable.loadDefault();
-
-
-
-//   var parser = new X.parser();
-//   volume.labelmap._image = parser.reslice(volume.labelmap);
-    
-//   volume.hasLabelMap = true;
-
-//   volume.labelmap._dirty = true;
-
-//   volume.modified();
-  
-//   // losp_updateCurrent(volume._labelmap);
-// }
-
 </script>
 
 </head>
