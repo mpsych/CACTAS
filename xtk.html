@@ -58,25 +58,69 @@ html, body {
         if (!ijk) return;
 
         // console.log(ijk[1]);
-        
-        var i = Math.max(0, ijk[1][0].toFixed(0));
-        var j = Math.max(0, ijk[1][1].toFixed(0));
-        var k = Math.max(0, ijk[1][2].toFixed(0));
 
         last_pixel = ijkConvert(ijk);
         // console.log(last_pixel);
         let [i, j, k] = last_pixel;
        
         v.labelmap.setPixel(i, j, k, current_label);
-
       }
 
       r.interactor.onMouseUp = function(e) {
 
+        // console.log(e); // TODO: why is e false? should contain mouse pos
         v.refresh(); // only now redraw
 
+        // ijk = r.xy2ijk(e.clientX, e.clientY);
+        // let [i, j, k] = ijkConvert(ijk);
+        // temp
+        let [i, j, k] = last_pixel;
+        console.log(last_pixel);
+
+        // overlapping annotations
+        // return ijk coords of where an existing annotation was encountered
+        function regionGrow(i, j, k) {
+          let label = v.labelmap.getPixel(i, j, k);
+
+          console.log(`[grow] current pixel: (${i}, ${j}, ${k}) : label(${label})`);
+
+          if (label > 0) {
+            if (label != current_label) {
+              return [i, j, k];
+            } else {
+              return regionGrow(i + 1, j, k);
+            }
+          }
       }
 
+      function fillAnnotation(i, j, k, label) {
+        console.log(`[fill] current pixel: (${i}, ${j}, ${k}) : label(${label})`);
+        v.labelmap.setPixel(i, j, k, label);
+
+        if (p = v.labelmap.getPixel(i + 1, j, k) > 0 && p != label) {
+          fillAnnotation(i + 1, j, k, label);
+        }
+        if (p = v.labelmap.getPixel(i - 1, j, k) > 0 && p != label) {
+          fillAnnotation(i - 1, j, k, label);
+        }
+        // if (p = v.labelmap.getPixel(i, j, k + 1) > 0 && p != label) {
+        //   fillAnnotation(i, j, k + 1, label);
+        // }
+        // if (p = v.labelmap.getPixel(i, j, k - 1) > 0 && p != label) {
+        //   fillAnnotation(i, j, k - 1, label);
+        // }
+      }
+      
+
+      let newLabel = regionGrow(i, j, k);
+      console.log(newLabel);
+      if (newLabel) {
+        [i, j, k] = newLabel;
+        console.log
+        fillAnnotation(i, j, k, v.labelmap.getPixel(i, j, k));
+      }
+
+      v.refresh();
     }
 
     function ijkConvert(ijk) {
@@ -88,6 +132,7 @@ html, body {
     }
 
   }
+}
 
 
 </script>
