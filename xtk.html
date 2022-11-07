@@ -57,7 +57,6 @@ html, body {
         ijk = r.xy2ijk(e.clientX, e.clientY)
         if (!ijk) return;
 
-        // console.log(ijk[1]);
 
         last_pixel = ijkConvert(ijk);
         // console.log(last_pixel);
@@ -68,28 +67,34 @@ html, body {
 
       r.interactor.onMouseUp = function(e) {
 
-        // console.log(e); // TODO: why is e false? should contain mouse pos
         v.refresh(); // only now redraw
 
-        // ijk = r.xy2ijk(e.clientX, e.clientY);
-        // let [i, j, k] = ijkConvert(ijk);
-        // temp
         let [i, j, k] = last_pixel;
-        console.log(last_pixel);
 
-        // overlapping annotations
+        // 8 neighbor directions
+        const dk = [1, 1, 0, -1, -1, -1, 0, 1];
+        const di = [0, -1, -1, -1, 0, 1, 1, 1];
+        let visited = [];
+
+        // find existing adjacent annotation
         // return ijk coords of where an existing annotation was encountered
-        function regionGrow(i, j, k) {
+        function findAdjacentAnnotation(i, j, k) {
           let label = v.labelmap.getPixel(i, j, k);
+          visited.push([i, j, k]);
 
-          console.log(`[grow] current pixel: (${i}, ${j}, ${k}) : label(${label})`);
 
-          if (label > 0) {
-            if (label != current_label) {
-              return [i, j, k];
-            } else {
-              return regionGrow(i + 1, j, k);
+          if (label != current_label) {
+            v.refresh();
+            return [i, j, k];
+          } else {
+            for (let x = 0; x < 8; x++) {
+              let next_px = [i + di[x], j, k + dk[x]];
+              if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j, k + dk[x]) != 0) {
+                let r = findAdjacentAnnotation(i + di[x], j, k + dk[x]);
+                if (r != null) return r;
+              }
             }
+            return null;
           }
       }
 
@@ -112,12 +117,13 @@ html, body {
       }
       
 
-      let newLabel = regionGrow(i, j, k);
-      console.log(newLabel);
+      visited = [];
+      let newLabel = findAdjacentAnnotation(i, j, k);
+      //console.log(newLabel);
       if (newLabel) {
         [i, j, k] = newLabel;
-        console.log
-        fillAnnotation(i, j, k, v.labelmap.getPixel(i, j, k));
+        v.labelmap.setPixel(i, j, k, 4); // debug
+        v.refresh();
       }
 
       v.refresh();
