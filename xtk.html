@@ -43,6 +43,10 @@ html, body {
 
     let last_pixel = null;
 
+    // 8 neighbor directions
+    const dk = [1, 1, 0, -1, -1, -1, 0, 1];
+    const di = [0, -1, -1, -1, 0, 1, 1, 1];
+
     r.onShowtime = function() {
 
       v.createEmptyLabelMap();
@@ -59,7 +63,6 @@ html, body {
 
 
         last_pixel = ijkConvert(ijk);
-        // console.log(last_pixel);
         let [i, j, k] = last_pixel;
        
         v.labelmap.setPixel(i, j, k, current_label);
@@ -71,39 +74,37 @@ html, body {
 
         let [i, j, k] = last_pixel;
 
-        // 8 neighbor directions
-        const dk = [1, 1, 0, -1, -1, -1, 0, 1];
-        const di = [0, -1, -1, -1, 0, 1, 1, 1];
-        let visited = [];
-
         // find existing adjacent annotation
         // return ijk coords of where an existing annotation was encountered
         function findAdjacentAnnotation(i, j, k) {
-          let label = v.labelmap.getPixel(i, j, k);
-          visited.push([i, j, k]);
+          let visited = [];
 
+          function findAnnotationRecursive(i, j, k) {
+            let label = v.labelmap.getPixel(i, j, k);
+            visited.push([i, j, k]);
 
-          if (label != current_label) {
-            v.refresh();
-            return [i, j, k];
-          } else {
-            for (let x = 0; x < 8; x++) {
-              let next_px = [i + di[x], j, k + dk[x]];
-              if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j, k + dk[x]) != 0) {
-                let r = findAdjacentAnnotation(i + di[x], j, k + dk[x]);
-                if (r != null) return r;
+            if (label != current_label) {
+              v.refresh();
+              return [i, j, k];
+            } else {
+              for (let x = 0; x < 8; x++) {
+                let next_px = [i + di[x], j, k + dk[x]];
+                if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j, k + dk[x]) != 0) {
+                  let r = findAnnotationRecursive(i + di[x], j, k + dk[x]);
+                  if (r != null) return r;
+                }
               }
+              return null;
             }
-            return null;
           }
-      }
+
+          return findAnnotationRecursive(i, j, k);
+        }
       
       // takes a pixel, spreads its color to all adjacent pixels
       function mergeAnnotations(i, j, k) {
         let label = v.labelmap.getPixel(i, j, k);
         let visited = [];
-
-        console.log("hello");
 
         function mergeRecursive(i, j, k) {
           visited.push([i, j, k]);
@@ -121,9 +122,7 @@ html, body {
         mergeRecursive(i, j, k);
       }
 
-      visited = [];
       let newLabel = findAdjacentAnnotation(i, j, k);
-      //console.log(newLabel);
       if (newLabel) {
         [i, j, k] = newLabel;
         mergeAnnotations(i, j, k);
