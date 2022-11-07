@@ -97,33 +97,36 @@ html, body {
             return null;
           }
       }
-
-      function fillAnnotation(i, j, k, label) {
-        console.log(`[fill] current pixel: (${i}, ${j}, ${k}) : label(${label})`);
-        v.labelmap.setPixel(i, j, k, label);
-
-        if (p = v.labelmap.getPixel(i + 1, j, k) > 0 && p != label) {
-          fillAnnotation(i + 1, j, k, label);
-        }
-        if (p = v.labelmap.getPixel(i - 1, j, k) > 0 && p != label) {
-          fillAnnotation(i - 1, j, k, label);
-        }
-        // if (p = v.labelmap.getPixel(i, j, k + 1) > 0 && p != label) {
-        //   fillAnnotation(i, j, k + 1, label);
-        // }
-        // if (p = v.labelmap.getPixel(i, j, k - 1) > 0 && p != label) {
-        //   fillAnnotation(i, j, k - 1, label);
-        // }
-      }
       
+      // takes a pixel, spreads its color to all adjacent pixels
+      function mergeAnnotations(i, j, k) {
+        let label = v.labelmap.getPixel(i, j, k);
+        let visited = [];
+
+        console.log("hello");
+
+        function mergeRecursive(i, j, k) {
+          visited.push([i, j, k]);
+
+          for (let x = 0; x < 8; x++) {
+            let next_px = [i + di[x], j, k + dk[x]];
+
+            if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j, k + dk[x]) != 0) {
+              v.labelmap.setPixel(i + di[x], j, k + dk[x], label);
+              let r = mergeRecursive(i + di[x], j, k + dk[x]);
+            }
+          }
+        }
+
+        mergeRecursive(i, j, k);
+      }
 
       visited = [];
       let newLabel = findAdjacentAnnotation(i, j, k);
       //console.log(newLabel);
       if (newLabel) {
         [i, j, k] = newLabel;
-        v.labelmap.setPixel(i, j, k, 4); // debug
-        v.refresh();
+        mergeAnnotations(i, j, k);
       }
 
       v.refresh();
