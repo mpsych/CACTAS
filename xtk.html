@@ -46,8 +46,9 @@
       let last_pixel = null;
 
       // 8 neighbor directions
-      const dk = [1, 1, 0, -1, -1, -1, 0, 1];
-      const di = [0, -1, -1, -1, 0, 1, 1, 1];
+      const dk = [1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 0, 1, 1, 0, -1, -1, -1, 0, 1, 0];
+      const di = [0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, -1, -1, -1, 0, 1, 1, 1, 0];
+      const dj = [0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
       r.onShowtime = function () {
 
@@ -89,10 +90,10 @@
                 v.refresh();
                 return [i, j, k];
               } else {
-                for (let x = 0; x < 8; x++) {
-                  let next_px = [i + di[x], j, k + dk[x]];
-                  if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j, k + dk[x]) != 0) {
-                    let r = findAnnotationRecursive(i + di[x], j, k + dk[x]);
+                for (let x = 0; x < 26; x++) {
+                  let next_px = [i + di[x], j + dj[x], k + dk[x]];
+                  if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j + dj[x], k + dk[x]) != 0) {
+                    let r = findAnnotationRecursive(i + di[x], j + dj[x], k + dk[x]);
                     if (r != null) return r;
                   }
                 }
@@ -111,12 +112,12 @@
             function mergeRecursive(i, j, k) {
               visited.push([i, j, k]);
 
-              for (let x = 0; x < 8; x++) {
-                let next_px = [i + di[x], j, k + dk[x]];
+              for (let x = 0; x < 26; x++) {
+                let next_px = [i + di[x], j + dj[x], k + dk[x]];
 
-                if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j, k + dk[x]) != 0) {
-                  v.labelmap.setPixel(i + di[x], j, k + dk[x], label);
-                  let r = mergeRecursive(i + di[x], j, k + dk[x]);
+                if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j + dj[x], k + dk[x]) != 0) {
+                  v.labelmap.setPixel(i + di[x], j + dj[x], k + dk[x], label);
+                  let r = mergeRecursive(i + di[x], j + dj[x], k + dk[x]);
                 }
               }
             }
@@ -126,6 +127,7 @@
 
           let newLabel = findAdjacentAnnotation(i, j, k);
           if (newLabel) {
+            console.log(newLabel);
             [i, j, k] = newLabel;
             mergeAnnotations(i, j, k);
           }
