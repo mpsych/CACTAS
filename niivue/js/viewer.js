@@ -10,11 +10,20 @@ H.Viewer = function(element) {
   nv.setSliceType(nv.sliceTypeCoronal);
   
   //dissable crosshair
-  nv.setCrosshairColor([0, 0, 0, 0])
+  nv.setCrosshairColor([0, 0, 0, 0]);
+
+  var data = [{
+    url: '../../data/avf.nii.gz',
+    colorMap: 'gray',
+    opacity: 1, 
+    visible: true
+  }];
+
+  nv.loadVolumes(data);
 
   // TODO zoom?
   // nv.setSliceMM(true);
-  nv.opts.dragMode = nv.dragModes.pan;
+  // nv.opts.dragMode = nv.dragModes.pan;
 
   this.nv = nv;
 
