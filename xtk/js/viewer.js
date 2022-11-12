@@ -5,61 +5,44 @@ H.Viewer = function(element) {
   r_x.container = 'viewerX';
   r_x.orientation = 'x';
   r_x.init();
+  this.r_x = r_x;
 
   var r_y = new X.renderer2D();
   r_y.container = 'viewerY';
   r_y.orientation = 'y';
   r_y.init();
+  this.r_y = r_y;
 
   var r_z = new X.renderer2D();
   r_z.container = 'viewerZ';
   r_z.orientation = 'z';
   r_z.init();
+  this.r_z = r_z;
 
   var v = new X.volume();
   // v.file = '../../data/p.nii.gz';
-  v.file = '../../data/avf.nii.gz';
+  v.file = '../data/avf.nii.gz';
 
   r_x.add(v);
 
   XTK_LOADED = 0;
 
-  r_y.onShowtime = function() {
+  r_y.onShowtime = this.onInitializationCompleted.bind(this);
 
-    XTK_LOADED += 1;
-
-    if(XTK_LOADED == 3) {
-      H.V.changeView('Coronal');
-    }
-  }
-
-  r_z.onShowtime = function() {
-
-    XTK_LOADED += 1;
-
-    if(XTK_LOADED == 3) {
-      H.V.changeView('Coronal');
-    }
-
-  }
+  r_z.onShowtime = this.onInitializationCompleted.bind(this);
 
   r_x.onShowtime = function() {
 
-    // trigger other loading
-
+    // start loading of other views
     r_y.add(v);
     r_z.add(v);
 
     r_y.render();
     r_z.render();
 
-    XTK_LOADED += 1;
+    this.onInitializationCompleted();
 
-    if(XTK_LOADED == 3) {
-      H.V.changeView('Coronal');
-    }
-
-  }
+  }.bind(this);
 
 
   r_x.render();
@@ -68,6 +51,27 @@ H.Viewer = function(element) {
   this.r = r_y;
 
 };
+
+
+H.Viewer.prototype.onInitializationCompleted = function() {
+
+  XTK_LOADED += 1;
+
+  if(XTK_LOADED == 3) {
+    // all 3 views are initialized
+
+    this.changeView('Coronal');
+
+    this.v.createEmptyLabelMap();
+    this.v.labelmap.opacity = 0.7;    
+
+    H.D.setupInteraction();
+
+  }
+
+
+};
+
 
 H.Viewer.prototype.changeView = function(orientation) {
 
@@ -80,6 +84,16 @@ H.Viewer.prototype.changeView = function(orientation) {
   Coronal.style.display = 'none';
 
   eval(orientation+'.style.display = "block";');
+
+  if (orientation == 'Axial') {
+    this.r = this.r_x;
+  } else if (orientation == 'Sagittal') {
+    this.r = this.r_y;
+  } else if (orientation == 'Coronal') {
+    this.r = this.r_z;
+  }
+
+  H.D.setupInteraction();
 
 };
 

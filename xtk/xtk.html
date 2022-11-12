@@ -1,13 +1,15 @@
 <html>
 
 <head>
-  <script type="text/javascript" src="https://get.goXTK.com/xtk11preview.js"></script>
+  <!-- <script type="text/javascript" src="https://get.goXTK.com/xtk11preview.js"></script> -->
 
   <!-- for local debugging only -->
   <!-- <script type="text/javascript" src="../get/xtk11preview.js"></script> -->
-  <!-- <script type="text/javascript" src="../X/lib/google-closure-library/closure/goog/base.js"></script> -->
-  <!-- <script type="text/javascript" src="../X/xtk-deps.js"></script> -->
+  <script type="text/javascript" src="../../X/lib/google-closure-library/closure/goog/base.js"></script>
+  <script type="text/javascript" src="../../X/xtk-deps.js"></script>
   <!-- for local debugging only -->
+
+  <script type="text/javascript" src="../js/annotator.js"></script>
 
   <style>
     html,
@@ -23,8 +25,8 @@
   <script>
 
     //<!-- for local debugging only -->
-    // goog.require('X.renderer2D');
-    // goog.require('X.volume');
+    goog.require('X.renderer2D');
+    goog.require('X.volume');
     //<!-- for local debugging only -->
 
     window.onload = function () {
@@ -34,7 +36,7 @@
       r.init();
 
       v = new X.volume();
-      v.file = 'p.nii.gz';
+      v.file = '../data/avf.nii.gz';
       // v.file = 'avf.nrrd';
 
       r.add(v);
@@ -45,12 +47,14 @@
 
       let last_pixel = null;
 
-      // 8 neighbor directions
-      const dk = [1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 0, 1, 1, 0, -1, -1, -1, 0, 1, 0];
-      const di = [0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, -1, -1, -1, 0, 1, 1, 1, 0];
-      const dj = [0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+
 
       r.onShowtime = function () {
+
+        A = new H.Annotator();
+        A.setPixel = v.labelmap.setPixel.bind(v.labelmap);
+        A.getPixel = v.labelmap.getPixel.bind(v.labelmap);
+        A.current_label = current_label;
 
         v.createEmptyLabelMap();
         v.labelmap.opacity = 0.7;
@@ -68,68 +72,24 @@
           last_pixel = ijkConvert(ijk);
           let [i, j, k] = last_pixel;
 
+          
+
           v.labelmap.setPixel(i, j, k, current_label);
+
         }
 
         r.interactor.onMouseUp = function (e) {
+
 
           v.refresh(); // only now redraw
 
           let [i, j, k] = last_pixel;
 
-          // find existing adjacent annotation
-          // return ijk coords of where an existing annotation was encountered
-          function findAdjacentAnnotation(i, j, k) {
-            let visited = [];
-
-            function findAnnotationRecursive(i, j, k) {
-              let label = v.labelmap.getPixel(i, j, k);
-              visited.push([i, j, k]);
-
-              if (label != current_label) {
-                v.refresh();
-                return [i, j, k];
-              } else {
-                for (let x = 0; x < 26; x++) {
-                  let next_px = [i + di[x], j + dj[x], k + dk[x]];
-                  if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j + dj[x], k + dk[x]) != 0) {
-                    let r = findAnnotationRecursive(i + di[x], j + dj[x], k + dk[x]);
-                    if (r != null) return r;
-                  }
-                }
-                return null;
-              }
-            }
-
-            return findAnnotationRecursive(i, j, k);
-          }
-
-          // takes a pixel, spreads its color to all adjacent pixels
-          function mergeAnnotations(i, j, k) {
-            let label = v.labelmap.getPixel(i, j, k);
-            let visited = [];
-
-            function mergeRecursive(i, j, k) {
-              visited.push([i, j, k]);
-
-              for (let x = 0; x < 26; x++) {
-                let next_px = [i + di[x], j + dj[x], k + dk[x]];
-
-                if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i])) && v.labelmap.getPixel(i + di[x], j + dj[x], k + dk[x]) != 0) {
-                  v.labelmap.setPixel(i + di[x], j + dj[x], k + dk[x], label);
-                  let r = mergeRecursive(i + di[x], j + dj[x], k + dk[x]);
-                }
-              }
-            }
-
-            mergeRecursive(i, j, k);
-          }
-
-          let newLabel = findAdjacentAnnotation(i, j, k);
+          let newLabel = A.findAdjacentAnnotation(i, j, k);
           if (newLabel) {
-            console.log(newLabel);
+            // console.log(newLabel);
             [i, j, k] = newLabel;
-            mergeAnnotations(i, j, k);
+            A.mergeAnnotations(i, j, k);
           }
 
           v.refresh();
