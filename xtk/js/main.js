@@ -9,7 +9,6 @@ window.onload = function() {
   H.A = new H.Annotator();
   H.A.setPixel = H.D.setSegment;
   H.A.getPixel = H.D.getSegment;
-  H.A.current_label = 1;
 
   
 };

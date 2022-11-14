@@ -28,18 +28,20 @@ H.Drawer.prototype.setupInteraction = function() {
 
   var r = this.viewer.r;
 
+  r.interactor.onMouseDown = this.onMouseDown.bind(this);
   r.interactor.onMouseMove = this.onMouseMove.bind(this);
   r.interactor.onMouseUp = this.onMouseUp.bind(this);
 
-  r.interactor.onMouseDown = function(left) {
+};
 
-    if (left) {
 
-      H.D.label += 1;
+H.Drawer.prototype.onMouseDown = function(e) {
 
-      H.D.leftDown = true;
+  if (e) { // for xtk e is a boolean for left mouse button
 
-    }
+    H.D.label += 1;
+
+    H.D.leftDown = true;
 
   }
 

@@ -11,8 +11,7 @@ H.Annotator = function () {
   this.getPixel = null;
   this.setPixel = null;
 
-  this.current_label = null;
-  this.label = null;
+  this.label = 0;
 
 };
 
@@ -36,7 +35,7 @@ H.Annotator.prototype.findAnnotationRecursive = function(i, j, k, visited) {
 
   visited.push([i, j, k]);
 
-  if (label != this.current_label) {
+  if (label != H.D.label) { // not sure if using H.D is clean but it works
 
     // v.refresh();
     return [i, j, k];

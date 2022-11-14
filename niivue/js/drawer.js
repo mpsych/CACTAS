@@ -43,6 +43,9 @@ H.Drawer.prototype.setSegment = function(x, y, z, label) {
 
 H.Drawer.prototype.setupInteraction = function() {
 
+  // since we are not using the niivue
+  // drawing that is builtin, we need
+  // to keep track of the mouse position like this
   this.nv.onLocationChange = function(e) {
 
     // we just enable drawing for a second to create the array
@@ -52,24 +55,24 @@ H.Drawer.prototype.setupInteraction = function() {
     // but then disable it
     this.nv.setDrawingEnabled(0);
 
-
-
     H.D.position = e['vox'];
-
 
   }.bind(this);
 
-  this.nv.canvas.onmousedown = function() {
+
+  this.nv.canvas.onmousedown = this.onMouseDown.bind(this);
+  this.nv.canvas.onmousemove = this.onMouseMove.bind(this);
+  this.nv.canvas.onmouseup = this.onMouseUp.bind(this);
+
+
+};
+
+
+H.Drawer.prototype.onMouseDown = function(e) {
 
     H.D.leftDown = true;
 
     H.D.label += 1;
-
-  };
-
-  this.nv.canvas.onmousemove = this.onMouseMove.bind(this);
-  this.nv.canvas.onmouseup = this.onMouseUp.bind(this);
-
 
 };
 
@@ -100,7 +103,7 @@ H.Drawer.prototype.onMouseUp = function(e) {
   var k = H.D.position[2];
 
   let newLabel = H.A.findAdjacentAnnotation(i, j, k);
-  console.log('newlabel', newLabel);
+  // console.log('newlabel', newLabel);
   if (newLabel) {
     // console.log(newLabel);
     [i, j, k] = newLabel;
