@@ -6,6 +6,11 @@ window.onload = function() {
   H.V = new H.Viewer( document.getElementById('viewer') );
   H.D = new H.Drawer( H.V ); // attach drawer
 
+  H.A = new H.Annotator();
+  H.A.setPixel = H.D.setSegment;
+  H.A.getPixel = H.D.getSegment;
+  H.A.current_label = 1;
+
 };
 
 function changeView() {

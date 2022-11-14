@@ -13,7 +13,7 @@ H.Viewer = function(element) {
   nv.setCrosshairColor([0, 0, 0, 0]);
 
   var data = [{
-    url: '../../data/avf.nii.gz',
+    url: '../data/avf.nii.gz',
     colorMap: 'gray',
     opacity: 1, 
     visible: true

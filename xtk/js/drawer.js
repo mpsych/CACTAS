@@ -6,7 +6,9 @@ H.Drawer = function(viewer) {
   this.j = null;
   this.k = null;
 
-  this.label = 1;
+  this.label = 0;
+
+  this.leftDown = false;
 
 };
 
@@ -29,12 +31,26 @@ H.Drawer.prototype.setupInteraction = function() {
   r.interactor.onMouseMove = this.onMouseMove.bind(this);
   r.interactor.onMouseUp = this.onMouseUp.bind(this);
 
+  r.interactor.onMouseDown = function(left) {
+
+    if (left) {
+
+      H.D.label += 1;
+
+      H.D.leftDown = true;
+
+    }
+
+  }
+
 };
 
 
 H.Drawer.prototype.onMouseMove = function(e) {
 
-  if (!e.ctrlKey) return;
+  // if (!e.ctrlKey) return;
+
+  if (!this.leftDown) return;
 
   var r = this.viewer.r;
   var v = this.viewer.v;
@@ -60,6 +76,8 @@ H.Drawer.prototype.onMouseMove = function(e) {
 
 H.Drawer.prototype.onMouseUp = function(e) {
 
+
+  this.leftDown = false;
 
   this.viewer.v.refresh(); 
 
