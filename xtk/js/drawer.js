@@ -1,4 +1,4 @@
-H.Drawer = function(viewer) {
+H.Drawer = function (viewer) {
 
   this.viewer = viewer;
 
@@ -7,24 +7,25 @@ H.Drawer = function(viewer) {
   this.k = null;
 
   this.label = 0;
+  this.intensity = null;
 
   this.leftDown = false;
 
 };
 
-H.Drawer.prototype.getSegment = function(x, y, z) {
-  
+H.Drawer.prototype.getSegment = function (x, y, z) {
+
   return H.V.v.labelmap.getPixel(x, y, z);
 
 };
 
-H.Drawer.prototype.setSegment = function(x, y, z, label) {
-  
+H.Drawer.prototype.setSegment = function (x, y, z, label) {
+
   return H.V.v.labelmap.setPixel(x, y, z, label);
 
 };
 
-H.Drawer.prototype.setupInteraction = function() {
+H.Drawer.prototype.setupInteraction = function () {
 
   var r = this.viewer.r;
 
@@ -35,7 +36,7 @@ H.Drawer.prototype.setupInteraction = function() {
 };
 
 
-H.Drawer.prototype.onMouseDown = function(e) {
+H.Drawer.prototype.onMouseDown = function (e) {
 
   if (e) { // for xtk e is a boolean for left mouse button
 
@@ -48,7 +49,7 @@ H.Drawer.prototype.onMouseDown = function(e) {
 };
 
 
-H.Drawer.prototype.onMouseMove = function(e) {
+H.Drawer.prototype.onMouseMove = function (e) {
 
   // if (!e.ctrlKey) return;
 
@@ -76,16 +77,18 @@ H.Drawer.prototype.onMouseMove = function(e) {
 };
 
 
-H.Drawer.prototype.onMouseUp = function(e) {
+H.Drawer.prototype.onMouseUp = function (e) {
 
 
   this.leftDown = false;
 
-  this.viewer.v.refresh(); 
+  this.viewer.v.refresh();
 
   let i = this.i;
   let j = this.j;
   let k = this.k;
+
+  this.intensity = this.viewer.v.getPixel(i, j, k);
 
   let newLabel = H.A.findAdjacentAnnotation(i, j, k);
   if (newLabel) {
