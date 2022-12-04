@@ -109,7 +109,7 @@ H.Annotator.prototype.thresholdedRegionGrowing = function (i, j, k, intensity) {
 
   let label = this.getPixel(i, j, k);
 
-  let threshold = intensity * 0.3;
+  let threshold = intensity * 0.5;
 
   this.thresholdedRegionGrowingRecursive(i, j, k, visited, label, threshold);
 };
@@ -119,7 +119,6 @@ H.Annotator.prototype.thresholdedRegionGrowingRecursive = function (i, j, k, vis
 
   for (let x = 0; x < 26; x++) {
 
-    this.next_px = [i + di[x], j + dj[x], k + dk[x]];
     next_px = [i + di[x], j + dj[x], k + dk[x]];
 
     if (next_px[0] >= 0 && next_px[0] < H.V.v.dimensions[0]
