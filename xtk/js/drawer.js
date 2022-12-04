@@ -90,6 +90,8 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   this.intensity = this.viewer.v.getPixel(i, j, k);
 
+  H.A.thresholdedRegionGrowing(i, j, k, this.intensity);
+
   let newLabel = H.A.findAdjacentAnnotation(i, j, k);
   if (newLabel) {
     // console.log(newLabel);
