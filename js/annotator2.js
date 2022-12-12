@@ -11,10 +11,14 @@ H.Annotator = function () {
 
   this.getVolumePixel = null;
 
+  this.getVolumeDimensions = null;
+
   this.label_to_find = -1;
   this.label_to_draw = -1;
 
   this.visited = [];
+
+  this.intensity_max = -1;
 
   this.threshold = null;
   this.threshold_tolerance = null;
@@ -28,6 +32,8 @@ H.Annotator = function () {
 
 H.Annotator.prototype.grow = function(i, j, k) {
 
+  this.dimensions = this.getVolumeDimensions();
+
   this.grow_recursive(i, j, k);
 
 };
@@ -37,6 +43,10 @@ H.Annotator.prototype.grow_recursive = function(i, j, k) {
 
 
   this.visited.push([i, j, k]);
+  this.setLabelmapPixel(i, j, k, this.label_to_draw);
+
+
+  var dimensions = this.dimensions;
 
   for (var step = 0; step < 26; step++) {
 
@@ -44,9 +54,9 @@ H.Annotator.prototype.grow_recursive = function(i, j, k) {
                    j + this.dj[step],
                    k + this.dk[step]];
 
-    if (new_ijk[0] < 0 || new_ijk[0] >= 10 || 
-        new_ijk[1] < 0 || new_ijk[1] >= 10 ||
-        new_ijk[2] < 0 || new_ijk[2] >= 10) {
+    if (new_ijk[0] < 0 || new_ijk[0] >= dimensions[0] || 
+        new_ijk[1] < 0 || new_ijk[1] >= dimensions[1] ||
+        new_ijk[2] < 0 || new_ijk[2] >= dimensions[2]) {
 
       // out of bounds
       continue;
@@ -58,7 +68,8 @@ H.Annotator.prototype.grow_recursive = function(i, j, k) {
 
     // // check if we visited that coordinate before
     var visited = false;
-    for (var v=0; v<this.visited.length; v++) {
+    var visited_length = this.visited.length;
+    for (var v=0; v<visited_length; v++) {
 
       var q = this.visited[v];
       if (q[0] == new_ijk[0] && q[1] == new_ijk[1] && q[2] == new_ijk[2]) {
@@ -74,13 +85,22 @@ H.Annotator.prototype.grow_recursive = function(i, j, k) {
 
     if (!visited) {
 
-      // now other conditions 
+      var intensity = this.getVolumePixel(new_ijk[0], new_ijk[1], new_ijk[2]);
 
-      // perform action
-      console.log(new_ijk);
+      // now other conditions
 
-      // we have not been here, start from that coordinate
-      this.grow_recursive(new_ijk[0], new_ijk[1], new_ijk[2]);
+      // tolerance from 
+      // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
+      if (Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.intensity_max)) {
+
+        // perform action
+        // console.log(intensity, i, j, k, new_ijk, step, visited);
+        // this.setLabelmapPixel(new_ijk[0], new_ijk[1], new_ijk[2], this.label_to_draw);
+
+        // we have not been here, start from that coordinate
+        this.grow_recursive(new_ijk[0], new_ijk[1], new_ijk[2]);
+
+      }
 
     } // visited check
 

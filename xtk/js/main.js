@@ -7,9 +7,10 @@ window.onload = function() {
   H.D = new H.Drawer( H.V ); // attach drawer
 
   H.A = new H.Annotator();
-  H.A.setPixel = H.D.setSegment;
-  H.A.getPixel = H.D.getSegment;
-
+  H.A.setLabelmapPixel = H.D.setLabelmapPixel;
+  H.A.getLabelmapPixel = H.D.getLabelmapPixel;
+  H.A.getVolumePixel = H.D.getVolumePixel;
+  H.A.getVolumeDimensions = H.D.getVolumeDimensions;
   
 };
 

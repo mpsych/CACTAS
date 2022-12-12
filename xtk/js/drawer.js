@@ -13,21 +13,40 @@ H.Drawer = function (viewer) {
 
 };
 
-H.Drawer.prototype.getSegment = function (x, y, z) {
+H.Drawer.prototype.getLabelmapPixel = function (x, y, z) {
 
   return H.V.v.labelmap.getPixel(x, y, z);
 
 };
 
-H.Drawer.prototype.setSegment = function (x, y, z, label) {
+H.Drawer.prototype.setLabelmapPixel = function (x, y, z, label) {
 
   return H.V.v.labelmap.setPixel(x, y, z, label);
+
+};
+
+H.Drawer.prototype.getVolumePixel = function(x, y, z) {
+
+  return H.V.v.getPixel(x, y, z);
+
+};
+
+H.Drawer.prototype.getVolumeDimensions = function() {
+
+  return H.V.v.dimensions;
 
 };
 
 H.Drawer.prototype.setupInteraction = function () {
 
   var r = this.viewer.r;
+  // console.log(r.fd);
+  // r.fd.onclick = function(e) {
+
+  //   console.log(e.clientX, e.clientY);
+
+  // }
+
 
   r.interactor.onMouseDown = this.onMouseDown.bind(this);
   r.interactor.onMouseMove = this.onMouseMove.bind(this);
@@ -53,7 +72,7 @@ H.Drawer.prototype.onMouseMove = function (e) {
 
   // if (!e.ctrlKey) return;
 
-  if (!this.leftDown) return;
+  // if (!this.leftDown) return;
 
   var r = this.viewer.r;
   var v = this.viewer.v;
@@ -68,7 +87,7 @@ H.Drawer.prototype.onMouseMove = function (e) {
   let j = Math.max(0, ijk[1][1].toFixed(0));
   let k = Math.max(0, ijk[1][2].toFixed(0));
 
-  v.labelmap.setPixel(i, j, k, this.label);
+  // v.labelmap.setPixel(i, j, k, this.label);
 
   this.i = i;
   this.j = j;
@@ -78,6 +97,10 @@ H.Drawer.prototype.onMouseMove = function (e) {
 
 
 H.Drawer.prototype.onMouseUp = function (e) {
+
+  if (!this.leftDown) {
+    return;
+  }
 
 
   this.leftDown = false;
@@ -90,14 +113,20 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   this.intensity = this.viewer.v.getPixel(i, j, k);
 
-  H.A.thresholdedRegionGrowing(i, j, k, this.intensity);
+  // H.A.thresholdedRegionGrowing(i, j, k, this.intensity);
 
-  let newLabel = H.A.findAdjacentAnnotation(i, j, k);
-  if (newLabel) {
-    // console.log(newLabel);
-    [i, j, k] = newLabel;
-    H.A.mergeAnnotations(i, j, k);
-  }
+  H.A.threshold = this.intensity;
+  H.A.intensity_max = H.V.v.max;
+  H.A.threshold_tolerance = 20;
+  H.A.label_to_draw = H.D.label;
+  H.A.grow(i, j, k);
+
+  // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
+  // if (newLabel) {
+  //   // console.log(newLabel);
+  //   [i, j, k] = newLabel;
+  //   H.A.mergeAnnotations(i, j, k);
+  // }
 
   this.viewer.v.refresh();
 
