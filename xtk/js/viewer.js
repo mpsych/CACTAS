@@ -44,6 +44,17 @@ H.Viewer = function(element) {
 
   }.bind(this);
 
+  r_x.onScroll = function(e) {
+    H.V.v.refresh();
+  }
+
+  r_y.onScroll = function(e) {
+    H.V.v.refresh();
+  }
+
+  r_z.onScroll = function(e) {
+    H.V.v.refresh();
+  }
 
   r_x.render();
 

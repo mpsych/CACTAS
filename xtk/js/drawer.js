@@ -59,9 +59,9 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
   if (e) { // for xtk e is a boolean for left mouse button
 
-    H.D.label += 1;
+    this.label += 1;
 
-    H.D.leftDown = true;
+    this.leftDown = true;
 
   }
 
@@ -77,7 +77,9 @@ H.Drawer.prototype.onMouseMove = function (e) {
   var r = this.viewer.r;
   var v = this.viewer.v;
 
-  e.cancel = true; // no window/level adjustment
+  if (this.leftDown) {
+    e.cancel = true; // no window/level adjustment
+  }
 
   ijk = r.xy2ijk(e.clientX, e.clientY)
   if (!ijk) return;
@@ -105,7 +107,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   this.leftDown = false;
 
-  this.viewer.v.refresh();
+  // this.viewer.v.refresh();
 
   let i = this.i;
   let j = this.j;
@@ -117,8 +119,10 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.A.threshold = this.intensity;
   H.A.intensity_max = H.V.v.max;
-  H.A.threshold_tolerance = 20;
+  H.A.threshold_tolerance = 30;
   H.A.label_to_draw = H.D.label;
+  H.A.mode = H.Annotator.MODES.GROW;
+
   H.A.grow(i, j, k);
 
   // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
@@ -127,6 +131,9 @@ H.Drawer.prototype.onMouseUp = function (e) {
   //   [i, j, k] = newLabel;
   //   H.A.mergeAnnotations(i, j, k);
   // }
+
+  // H.A.mode = H.Annotator.MODES.MERGE;
+  // H.A.grow(i, j, k);
 
   this.viewer.v.refresh();
 

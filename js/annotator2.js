@@ -3,7 +3,6 @@ var H = H || {};
 
 
 
-
 H.Annotator = function () {
 
   this.getLabelmapPixel = null;
@@ -23,14 +22,22 @@ H.Annotator = function () {
   this.threshold = null;
   this.threshold_tolerance = null;
 
+  this.mode = H.Annotator.MODES.GROW; 
+
   // 26 neighbor directions (9 + 8 + 9)
   this.di = [0, -1, -1, -1,  0,  1, 1, 1,  0, -1, -1, -1,  0,  1,  1,  1,  0, 0, -1, -1, -1,  0,  1, 1, 1, 0];
   this.dj = [0,  0,  0,  0,  0,  0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1,  1,  1,  1,  1,  1, 1, 1, 1];  
   this.dk = [1,  1,  0, -1, -1, -1, 0, 1,  1,  1,  0, -1, -1, -1,  0,  1,  0, 1,  1,  0, -1, -1, -1, 0, 1, 0];
 };
 
+H.Annotator.MODES = {
+  'GROW': 0,
+  'MERGE': 1,
+};
 
 H.Annotator.prototype.grow = function(i, j, k) {
+
+  // this.visited = [];
 
   this.dimensions = this.getVolumeDimensions();
 
@@ -89,18 +96,38 @@ H.Annotator.prototype.grow_recursive = function(i, j, k) {
 
       // now other conditions
 
+      if (this.mode == H.Annotator.MODES.MERGE) {
+
+        var old_label = this.getLabelmapPixel(new_ijk[0], new_ijk[1], new_ijk[2]);
+
+        if (old_label != 0 && old_label != this.label_to_draw) {
+
+          console.log('Found label!', old_label);
+
+          // console.log('merging', i, j, k, new_ijk, 'old', old_label, 'new', this.label_to_draw);
+
+          // // next pixel is already colored, now overwrite it
+          // this.setLabelmapPixel(new_ijk[0], new_ijk[1], new_ijk[2], this.label_to_draw);
+
+          // this.grow_recursive(new_ijk[0], new_ijk[1], new_ijk[2]);
+
+        }
+
+      }
+
       // tolerance from 
       // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
-      if (Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.intensity_max)) {
+      if (this.mode == H.Annotator.MODES.GROW && Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.threshold)) {
 
         // perform action
-        // console.log(intensity, i, j, k, new_ijk, step, visited);
+        console.log('growing', intensity, i, j, k, new_ijk, step, visited, this.label_to_draw);
         // this.setLabelmapPixel(new_ijk[0], new_ijk[1], new_ijk[2], this.label_to_draw);
 
         // we have not been here, start from that coordinate
         this.grow_recursive(new_ijk[0], new_ijk[1], new_ijk[2]);
 
       }
+
 
     } // visited check
 
