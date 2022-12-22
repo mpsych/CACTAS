@@ -21,10 +21,22 @@ H.Annotator = function () {
 
   this.mode = H.Annotator.MODES.GROW; 
 
+
+  this.labels = {};
+
+
   // 26 neighbor directions (9 + 8 + 9)
   this.di = [0, -1, -1, -1,  0,  1, 1, 1,  0, -1, -1, -1,  0,  1,  1,  1,  0, 0, -1, -1, -1,  0,  1, 1, 1, 0];
   this.dj = [0,  0,  0,  0,  0,  0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1,  1,  1,  1,  1,  1, 1, 1, 1];  
   this.dk = [1,  1,  0, -1, -1, -1, 0, 1,  1,  1,  0, -1, -1, -1,  0,  1,  0, 1,  1,  0, -1, -1, -1, 0, 1, 0];
+
+  // 6 neighbor directions (1 + 4 + 1)
+  this.di = [0,  0,  1, -1, 0,  0];
+  this.dj = [0,  0,  0,  0, 1, -1];
+  this.dk = [1,  -1, 0,  0, 0,  0];
+
+
+
 };
 
 H.Annotator.MODES = {
@@ -41,11 +53,14 @@ H.Annotator.prototype.grow = function(i, j, k) {
   var point_list = [];
   point_list.push([i, j, k]);
 
+  this.labels[this.label_to_draw] = [];
+  this.labels_to_merge = {};
+
   var counter = 0;
 
   while( point_list.length != 0) {
 
-    if (counter++ > 30000) {
+    if (counter++ > 20000) {
       console.log('canceled!')
       break;
     }
@@ -56,10 +71,13 @@ H.Annotator.prototype.grow = function(i, j, k) {
     var j = this_point[1];
     var k = this_point[2];
 
+    //
     this.visited.push([i, j, k]);
     this.setLabelmapPixel(i, j, k, this.label_to_draw);
+    this.labels[this.label_to_draw].push([i, j, k]);
 
-    for (var step = 0; step < 26; step++) {
+
+    for (var step = 0; step < 6; step++) {
 
       var new_ijk = [i + this.di[step], 
                      j + this.dj[step],
@@ -95,9 +113,19 @@ H.Annotator.prototype.grow = function(i, j, k) {
 
         var intensity = this.getVolumePixel(new_ijk[0], new_ijk[1], new_ijk[2]);
 
-        if (Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.threshold)) {
+        var old_label = this.getLabelmapPixel(new_ijk[0], new_ijk[1], new_ijk[2]);
 
-          point_list.push(new_ijk);
+        if (old_label != 0 && old_label != this.label_to_draw) {
+
+          this.labels_to_merge[old_label] = true;
+
+        } else {
+
+          if (Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.threshold)) {
+
+            point_list.push(new_ijk);
+
+          }
 
         }
 
@@ -107,5 +135,7 @@ H.Annotator.prototype.grow = function(i, j, k) {
     }
 
   };
+
+  console.log('Found labels to merge', this.labels_to_merge);
 
 };
