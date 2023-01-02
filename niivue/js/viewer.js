@@ -7,13 +7,17 @@ H.Viewer = function(element) {
   nv.attachToCanvas(element);
 
   //set default view to coronal
-  nv.setSliceType(nv.sliceTypeCoronal);
+  // nv.setSliceType(nv.sliceTypeCoronal);
   
   //dissable crosshair
   nv.setCrosshairColor([0, 0, 0, 0]);
 
+  nv.opts.crosshairWidth = 0;
+
+
   var data = [{
-    url: '../data/avf.nii.gz',
+    // url: '../data/avf.nii.gz',
+    url: '../data/esus12.nrrd',
     colorMap: 'gray',
     opacity: 1, 
     visible: true
@@ -22,8 +26,20 @@ H.Viewer = function(element) {
   nv.loadVolumes(data);
 
   // TODO zoom?
-  // nv.setSliceMM(true);
-  // nv.opts.dragMode = nv.dragModes.pan;
+  nv.setSliceMM(true);
+  nv.opts.dragMode = nv.dragModes.pan;
+
+  nv.onImageLoaded = function() {
+    
+    console.log('a')
+    nv.opts.textHeight = 0.01;
+    nv.drawScene();
+
+  };
+
+  nv.onLocationChange = function(e) {
+    console.log(e)
+  }
 
   this.nv = nv;
 

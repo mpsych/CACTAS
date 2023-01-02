@@ -20,8 +20,9 @@ H.Viewer = function(element) {
   this.r_z = r_z;
 
   var v = new X.volume();
-  v.file = '../../data/plaque_normalized.nii.gz';
+  // v.file = '../../data/plaque_normalized.nii.gz';
   // v.file = '../data/avf.nii.gz';
+  v.file = '../data/esus12.nrrd';
 
   r_x.add(v);
 
@@ -39,6 +40,10 @@ H.Viewer = function(element) {
 
     r_y.render();
     r_z.render();
+
+    H.V.v.windowLow  = -500
+    H.V.v.windowHigh = 1600
+
 
     this.onInitializationCompleted();
 
@@ -71,7 +76,7 @@ H.Viewer.prototype.onInitializationCompleted = function() {
   if(XTK_LOADED == 3) {
     // all 3 views are initialized
 
-    this.changeView('Coronal');
+    // this.changeView('Coronal');
 
     this.v.createEmptyLabelMap();
     this.v.labelmap.opacity = 0.7;    
@@ -86,25 +91,25 @@ H.Viewer.prototype.onInitializationCompleted = function() {
 
 H.Viewer.prototype.changeView = function(orientation) {
 
-  Axial = document.getElementById('viewerX');
-  Sagittal = document.getElementById('viewerY');
-  Coronal = document.getElementById('viewerZ');
+  // Axial = document.getElementById('viewerX');
+  // Sagittal = document.getElementById('viewerY');
+  // Coronal = document.getElementById('viewerZ');
 
-  Axial.style.display = 'none';
-  Sagittal.style.display = 'none';
-  Coronal.style.display = 'none';
+  // Axial.style.display = 'none';
+  // Sagittal.style.display = 'none';
+  // Coronal.style.display = 'none';
 
-  eval(orientation+'.style.display = "block";');
+  // eval(orientation+'.style.display = "block";');
 
-  if (orientation == 'Axial') {
-    this.r = this.r_x;
-  } else if (orientation == 'Sagittal') {
-    this.r = this.r_y;
-  } else if (orientation == 'Coronal') {
-    this.r = this.r_z;
-  }
+  // if (orientation == 'Axial') {
+  //   this.r = this.r_x;
+  // } else if (orientation == 'Sagittal') {
+  //   this.r = this.r_y;
+  // } else if (orientation == 'Coronal') {
+  //   this.r = this.r_z;
+  // }
 
-  H.D.setupInteraction();
+  // H.D.setupInteraction();
 
 };
 

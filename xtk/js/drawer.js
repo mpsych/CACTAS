@@ -81,7 +81,11 @@ H.Drawer.prototype.onMouseMove = function (e) {
     e.cancel = true; // no window/level adjustment
   }
 
-  ijk = r.xy2ijk(e.clientX, e.clientY)
+  aaa = e
+
+  // console.log(e.clientX, e.clientY)
+
+  ijk = r.xy2ijk(e.offsetX, e.offsetY)
   if (!ijk) return;
 
 
@@ -113,13 +117,15 @@ H.Drawer.prototype.onMouseUp = function (e) {
   let j = this.j;
   let k = this.k;
 
+  console.log(i,j,k)
+
   this.intensity = this.viewer.v.getPixel(i, j, k);
 
   // H.A.thresholdedRegionGrowing(i, j, k, this.intensity);
 
   H.A.threshold = this.intensity;
   H.A.intensity_max = H.V.v.max;
-  H.A.threshold_tolerance = 10;
+  H.A.threshold_tolerance = 20;
   H.A.label_to_draw = H.D.label;
   H.A.mode = H.Annotator.MODES.GROW;
 

@@ -84,13 +84,13 @@ H.Drawer.prototype.onMouseMove = function (e) {
 
 
 
-  if (H.D.leftDown) {
+  // if (H.D.leftDown) {
 
-    H.D.setSegment(H.D.position[0], H.D.position[1], H.D.position[2], H.D.label);
-    H.D.nv.refreshDrawing();
-    // console.log(H.D.leftDown, H.D.position)
+  //   H.D.setSegment(H.D.position[0], H.D.position[1], H.D.position[2], H.D.label);
+  //   H.D.nv.refreshDrawing();
+  //   // console.log(H.D.leftDown, H.D.position)
 
-  }
+  // }
 
 };
 

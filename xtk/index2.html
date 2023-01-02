@@ -1,0 +1,36 @@
+<html>
+
+    <head>
+
+        <script type="text/javascript" src="https://get.goXTK.com/xtk11preview.js"></script>
+
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/viewer.js"></script>
+        <script type="text/javascript" src="js/drawer.js"></script>
+
+        <!-- <script type="text/javascript" src="../js/annotator.js"></script> -->
+
+        <script type="text/javascript" src="../js/annotator3.js"></script>
+
+
+        <link rel="stylesheet" href="css/main.css">
+
+    </head>
+
+    <body>
+        <div id="toolbar">
+            <select id="view" onclick="changeView()">
+                <option value="axial">Axial</option>
+                <option value="coronal" selected>Coronal</option>
+                <option value="sagittal">Sagittal</option>
+            </select>
+            <!-- <span id="colorIndicator"></span> -->
+        </div>
+
+        <div id="viewerX" class="viewer"></div>
+        <div id="viewerY" class="viewer"></div>
+        <div id="viewerZ" class="viewer"></div>
+
+    </body>
+
+</html>

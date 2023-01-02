@@ -8,41 +8,10 @@ html, body {
   color:  white;
 }
 
-#toolbar {
-    position: absolute;
-
-    z-index:  3000;
-
-    height: 50px;
-
-    width:  100%;
-    top: 0px;
-    left:  0px;
-
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#colorTool {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-#colorIndicator {
-    width: 25px;
-    height: 25px;
-    display: inline-block;
-    background-color: red;
-}
-
-
-.viewer {
+.panel {
     border: none;
     outline: none;
-    width: 100%;
-    height: 100%;
+    width: 50%;
+    height: 50%;
     float:left;
-    position: absolute;
 }
