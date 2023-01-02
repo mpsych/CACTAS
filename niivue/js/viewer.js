@@ -1,7 +1,12 @@
-H.Viewer = function(element) {
+H.Viewer = function(element, url) {
   
   //instance of niivue
-  nv = new niivue.Niivue();
+  nv = new niivue.Niivue({    
+  textHeight : 0.01,    onLocationChange: function(e) {
+
+    },
+    loadingText: 'please wait',
+  });
 
   //attach object to viewer
   nv.attachToCanvas(element);
@@ -17,10 +22,13 @@ H.Viewer = function(element) {
 
   var data = [{
     // url: '../data/avf.nii.gz',
-    url: '../data/esus12.nrrd',
+    // url: '../data/esus12.nrrd',
+    url: url,
     colorMap: 'gray',
     opacity: 1, 
-    visible: true
+    visible: true,
+    cal_min: -500,
+    cal_max: 1600
   }];
 
   nv.loadVolumes(data);
@@ -30,16 +38,20 @@ H.Viewer = function(element) {
   nv.opts.dragMode = nv.dragModes.pan;
 
   nv.onImageLoaded = function() {
-    
-    console.log('a')
-    nv.opts.textHeight = 0.01;
-    nv.drawScene();
+
+    // nv.volumes[0].cal_min  = -500
+    // nv.volumes[0].cal_max = 1600
+    // nv.updateGLVolume();
+
+    // nv.drawScene();
 
   };
 
-  nv.onLocationChange = function(e) {
-    console.log(e)
-  }
+  // nv.createOnLocationChange();
+
+  // nv.onLocationChange = function(e) {
+  //   console.log(e)
+  // }
 
   this.nv = nv;
 

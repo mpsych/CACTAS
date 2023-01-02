@@ -125,7 +125,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.A.threshold = this.intensity;
   H.A.intensity_max = H.V.v.max;
-  H.A.threshold_tolerance = 20;
+  H.A.threshold_tolerance = 30;
   H.A.label_to_draw = H.D.label;
   H.A.mode = H.Annotator.MODES.GROW;
 

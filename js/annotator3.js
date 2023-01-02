@@ -121,7 +121,7 @@ H.Annotator.prototype.grow = function(i, j, k) {
 
         } else {
 
-          if (Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.threshold)) {
+          if ((intensity >= this.threshold) || (Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.threshold))) {
 
             point_list.push(new_ijk);
 

@@ -3,13 +3,17 @@ H.version = '0.1';
 
 window.onload = function() {
 
-  H.V = new H.Viewer( document.getElementById('viewer') );
+  var url = '../data/avf.nii.gz';
+  // var url = '../data/esus12.nrrd';
+
+  H.V = new H.Viewer( document.getElementById('viewer'), url );
   H.D = new H.Drawer( H.V ); // attach drawer
 
   H.A = new H.Annotator();
-  H.A.setPixel = H.D.setSegment;
-  H.A.getPixel = H.D.getSegment;
-  H.A.current_label = 1;
+  H.A.setLabelmapPixel = H.D.setLabelmapPixel;
+  H.A.getLabelmapPixel = H.D.getLabelmapPixel;
+  H.A.getVolumePixel = H.D.getVolumePixel;
+  H.A.getVolumeDimensions = H.D.getVolumeDimensions;
 
 };
 

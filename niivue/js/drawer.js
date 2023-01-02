@@ -13,11 +13,11 @@ H.Drawer = function (viewer) {
 };
 
 
-H.Drawer.prototype.getSegment = function (x, y, z) {
+H.Drawer.prototype.getLabelmapPixel = function (x, y, z) {
 
-  let dx = nv.back.dims[1];
-  let dy = nv.back.dims[2];
-  let dz = nv.back.dims[3];
+  let dx = H.D.nv.volumes[0].dims[1];
+  let dy = H.D.nv.volumes[0].dims[2];
+  let dz = H.D.nv.volumes[0].dims[3];
 
   x = Math.min(Math.max(x, 0), dx - 1);
   y = Math.min(Math.max(y, 0), dy - 1);
@@ -27,17 +27,29 @@ H.Drawer.prototype.getSegment = function (x, y, z) {
 
 };
 
-H.Drawer.prototype.setSegment = function (x, y, z, label) {
+H.Drawer.prototype.setLabelmapPixel = function (x, y, z, label) {
 
-  let dx = nv.back.dims[1];
-  let dy = nv.back.dims[2];
-  let dz = nv.back.dims[3];
+  let dx = H.D.nv.volumes[0].dims[1];
+  let dy = H.D.nv.volumes[0].dims[2];
+  let dz = H.D.nv.volumes[0].dims[3];
 
   x = Math.min(Math.max(x, 0), dx - 1);
   y = Math.min(Math.max(y, 0), dy - 1);
   z = Math.min(Math.max(z, 0), dz - 1);
 
   H.D.nv.drawBitmap[x + y * dx + z * dx * dy] = label;
+
+};
+
+H.Drawer.prototype.getVolumePixel = function(x, y, z) {
+
+  return H.D.nv.volumes[0].getValue(x,y,z);
+
+};
+
+H.Drawer.prototype.getVolumeDimensions = function() {
+
+  return H.D.nv.volumes[0].dims.slice(1);
 
 };
 
@@ -105,12 +117,40 @@ H.Drawer.prototype.onMouseUp = function (e) {
   var j = H.D.position[1];
   var k = H.D.position[2];
 
-  let newLabel = H.A.findAdjacentAnnotation(i, j, k);
-  // console.log('newlabel', newLabel);
-  if (newLabel) {
-    // console.log(newLabel);
-    [i, j, k] = newLabel;
-    H.A.mergeAnnotations(i, j, k);
-  }
+  // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
+  // // console.log('newlabel', newLabel);
+  // if (newLabel) {
+  //   // console.log(newLabel);
+  //   [i, j, k] = newLabel;
+  //   H.A.mergeAnnotations(i, j, k);
+  // }
+
+
+  this.intensity = H.D.getVolumePixel(i, j, k);
+
+  // H.A.thresholdedRegionGrowing(i, j, k, this.intensity);
+
+  H.A.threshold = this.intensity;
+  H.A.intensity_max = H.D.nv.volumes[0].global_max;
+  H.A.threshold_tolerance = 30;
+  H.A.label_to_draw = H.D.label;
+  H.A.mode = H.Annotator.MODES.GROW;
+
+  H.A.grow(i, j, k);
+
+  // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
+  // if (newLabel) {
+  //   // console.log(newLabel);
+  //   [i, j, k] = newLabel;
+  //   H.A.mergeAnnotations(i, j, k);
+  // }
+
+  // H.A.mode = H.Annotator.MODES.MERGE;
+  // H.A.grow(i, j, k);
+
+  H.D.nv.refreshDrawing();
+
+  // this.viewer.v.refresh();
+
 
 };
