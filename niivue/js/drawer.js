@@ -123,7 +123,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
   var j = H.D.position[1];
   var k = H.D.position[2];
 
-  i = 512 - i;
+  // i = 512 - i;
 
   // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
   // // console.log('newlabel', newLabel);

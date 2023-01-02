@@ -46,6 +46,10 @@ H.Annotator.MODES = {
 
 H.Annotator.prototype.grow = function(i, j, k) {
 
+  // inspired by
+  // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
+
+
   this.visited = [];
 
   var dimensions = this.getVolumeDimensions();

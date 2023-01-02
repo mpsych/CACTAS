@@ -21,7 +21,7 @@ H.Viewer = function(element, url) {
 
   var v = new X.volume();
   // v.file = '../../data/plaque_normalized.nii.gz';
-  v.file = '../data/avf.nii.gz';
+  // v.file = '../data/avf.nii.gz';
   // v.file = '../data/esus12.nrrd';
   v.file = url;
 
