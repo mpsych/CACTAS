@@ -104,12 +104,18 @@ H.Drawer.prototype.onMouseMove = function (e) {
 
 H.Drawer.prototype.onMouseUp = function (e) {
 
+
   if (!this.leftDown) {
     return;
   }
 
 
+
   this.leftDown = false;
+
+
+
+  // if (!e.ctrlKey) return;
 
   // this.viewer.v.refresh();
 

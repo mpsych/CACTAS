@@ -72,6 +72,8 @@ H.Drawer.prototype.setupInteraction = function () {
 
     H.D.position = e['vox'];
 
+    console.log(H.D.position)
+
   }.bind(this);
 
 
@@ -113,9 +115,15 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.D.leftDown = false;
 
+
+  if (!e.ctrlKey) return;
+
+
   var i = H.D.position[0];
   var j = H.D.position[1];
   var k = H.D.position[2];
+
+  // i = 512 - i;
 
   // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
   // // console.log('newlabel', newLabel);
