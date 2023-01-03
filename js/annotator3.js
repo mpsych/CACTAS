@@ -163,6 +163,7 @@ addEventListener('keydown', (e) => {
 
     // only undo if there are labels
     if (Object.keys(H.A.labels).length > 0) {
+
       let last_label = H.D.label;
 
       console.log(`undo label ${last_label}`);
@@ -179,7 +180,7 @@ addEventListener('keydown', (e) => {
 
       delete H.A.labels[last_label];
 
-    // to reuse the same label
+      // to reuse the same label
       H.D.label--;
     }
   }
