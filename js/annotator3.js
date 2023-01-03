@@ -138,4 +138,17 @@ H.Annotator.prototype.grow = function(i, j, k) {
 
   console.log('Found labels to merge', this.labels_to_merge);
 
+  // merge labels
+  for (let label in this.labels_to_merge) {
+
+    // this.labels[this.label_to_draw].forEach(pt => {
+    for (let pt of this.labels[this.label_to_draw]) {
+
+      let i, j, k;
+
+      [i, j, k] = pt;
+
+      this.setLabelmapPixel(i, j, k, label);
+    }
+  }
 };
