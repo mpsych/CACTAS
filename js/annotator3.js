@@ -145,7 +145,6 @@ H.Annotator.prototype.grow = function(i, j, k) {
   // merge labels
   for (let label in this.labels_to_merge) {
 
-    // this.labels[this.label_to_draw].forEach(pt => {
     for (let pt of this.labels[this.label_to_draw]) {
 
       let i, j, k;
@@ -156,3 +155,28 @@ H.Annotator.prototype.grow = function(i, j, k) {
     }
   }
 };
+
+// undo: 'Z' keypress
+addEventListener('keydown', (e) => {
+  if (e.code == "KeyZ") {
+    
+    let last_label = H.A.label_to_draw;
+
+    console.log(`undo label ${last_label}`);
+
+    for (let pt of H.A.labels[last_label]) {
+
+      let i, j, k;
+      [i, j, k] = pt;
+
+      H.A.setLabelmapPixel(i, j, k, 0);
+    }
+
+    H.V.v.refresh();
+
+    delete H.A.labels[last_label];
+
+    // to reuse the same label
+    H.D.label--;
+  }
+});
