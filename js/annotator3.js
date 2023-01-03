@@ -156,27 +156,31 @@ H.Annotator.prototype.grow = function(i, j, k) {
   }
 };
 
-// undo: 'Z' keypress
 addEventListener('keydown', (e) => {
+
+  // undo: 'Z' keypress
   if (e.code == "KeyZ") {
-    
-    let last_label = H.A.label_to_draw;
 
-    console.log(`undo label ${last_label}`);
+    // only undo if there are labels
+    if (Object.keys(H.A.labels).length > 0) {
+      let last_label = H.D.label;
 
-    for (let pt of H.A.labels[last_label]) {
+      console.log(`undo label ${last_label}`);
 
-      let i, j, k;
-      [i, j, k] = pt;
+      for (let pt of H.A.labels[last_label]) {
 
-      H.A.setLabelmapPixel(i, j, k, 0);
-    }
+        let i, j, k;
+        [i, j, k] = pt;
 
-    H.V.v.refresh();
+        H.A.setLabelmapPixel(i, j, k, 0);
+      }
 
-    delete H.A.labels[last_label];
+      H.V.v.refresh();
+
+      delete H.A.labels[last_label];
 
     // to reuse the same label
-    H.D.label--;
+      H.D.label--;
+    }
   }
 });
