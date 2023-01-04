@@ -143,17 +143,32 @@ H.Annotator.prototype.grow = function(i, j, k) {
   console.log('Found labels to merge', this.labels_to_merge);
 
   // merge labels
-  for (let label in this.labels_to_merge) {
+  // only if there are labels to merge
+  if (Object.keys(this.labels_to_merge).length > 0) {
 
-    for (let pt of this.labels[this.label_to_draw]) {
+    let label_color_to_inherit = Object.keys(this.labels_to_merge)[0];
+    let current_label = H.D.label;
 
-      let i, j, k;
+    // a list of all labels that need to be the same color
+    // current label + all labels that were merged
+    let labels_to_relabel = [current_label.toString(), ...Object.keys(this.labels_to_merge)];
 
-      [i, j, k] = pt;
+    for (let label of labels_to_relabel) {
 
-      this.setLabelmapPixel(i, j, k, label);
+        console.log(`Relabling ${label}`);
+
+        for (let pt of this.labels[label]) {
+
+          let i, j, k;
+
+          [i, j, k] = pt;
+
+          this.setLabelmapPixel(i, j, k, label_color_to_inherit);
+      }
     }
   }
+
+  H.V.v.refresh();
 };
 
 addEventListener('keydown', (e) => {
