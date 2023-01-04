@@ -84,7 +84,13 @@ class Util:
 
     masked = np.ma.masked_where(label==0, label)
 
-    slices = image.shape[2]
+    if image.ndim == 3:
+
+      slices = image.shape[2]
+
+    else:
+
+      slices = 1
 
     fig = plt.figure(figsize=(slices,3))
 
@@ -97,9 +103,12 @@ class Util:
 
       plt.axis('off')
 
-      plt.imshow(image[:,:,i], cmap='gray', vmin=-600, vmax=1000)
-      plt.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=0.7) 
-
+      if slices > 1:
+        plt.imshow(image[:,:,i], cmap='gray', vmin=-600, vmax=1000)
+        plt.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=0.7) 
+      else:
+        plt.imshow(image, cmap='gray', vmin=-600, vmax=1000)
+        plt.imshow(masked, cmap='jet', interpolation='none', alpha=0.7) 
 
   @staticmethod
   def overview(datapath='/home/d/Dropbox/RESEARCH/CAROTID/DATA/Nathan Arnett Calcification/'):
@@ -117,3 +126,39 @@ class Util:
       image_filtered, label_filtered = Util.filter(image_cropped, label_cropped)
 
       Util.view(image_filtered, label_filtered, title=d)
+
+  @staticmethod
+  def pad(images, labels):
+    '''
+    images and labels need to be a list
+
+    returns padded numpy array for both
+    '''
+
+    maxX = 0
+    maxY = 0
+    slicecount = 0
+
+    for i in images:
+
+      maxY = max(maxY, i.shape[0])
+      maxX = max(maxX, i.shape[1])
+      slicecount += i.shape[2] # running number of slices
+
+    padded_images = np.zeros((slicecount, maxY, maxX), dtype=images[0].dtype)
+    padded_labels = np.zeros((slicecount, maxY, maxX), dtype=labels[0].dtype)
+
+    currentslice = 0
+
+    for i, img in enumerate(images):
+
+      for z in range(images[i].shape[2]):
+
+        padded_images[currentslice, 0:img.shape[0], 0:img.shape[1]] = images[i][:,:,z] 
+        padded_labels[currentslice, 0:img.shape[0], 0:img.shape[1]] = labels[i][:,:,z]
+
+        currentslice += 1
+
+    return padded_images, padded_labels
+
+
