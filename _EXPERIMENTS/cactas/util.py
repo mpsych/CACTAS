@@ -4,11 +4,12 @@ import mahotas as mh
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+import scipy
 
 class Util:
 
   @staticmethod
-  def load(which, datapath='/home/d/Dropbox/RESEARCH/CAROTID/DATA/Nathan Arnett Calcification/'):
+  def load(which, datapath='/home/d/Dropbox/RESEARCH/CAROTID/DATA/Nathan Arnett Calcification/', with_header=False):
 
     DATASETS = sorted([v for v in os.listdir(datapath) if os.path.isdir(datapath + v)])
 
@@ -20,16 +21,50 @@ class Util:
     label_file = [s for s in label_file if os.path.isfile(s)][0]
     image_file = [i for i in image_file if os.path.isfile(i)][0]
 
-    label = nrrd.read(label_file)[0]
-    image = nrrd.read(image_file)[0]
+    label_with_header = nrrd.read(label_file)
+    image_with_header = nrrd.read(image_file)
+
+    label = label_with_header[0]
+    image = image_with_header[0]
+
+    if with_header:
+      return image_with_header, label_with_header
 
     return image, label
 
   @staticmethod
-  def crop(image, label, increase_xy=10, increase_z=0):
+  def crop(image, label, increase_xy=10, increase_z=0, target_size=None, just_z=False):
 
     bbox = mh.bbox(label) # ignore large portion of label since its all 0
                           # to only include annotated plaque regions
+
+    increase_x = increase_xy
+    increase_y = increase_xy
+
+    if target_size:
+
+      widthY = bbox[1]-bbox[0]
+      widthX = bbox[3]-bbox[2]
+
+      increase_x = (target_size - widthX) // 2
+      increase_y = (target_size - widthY) // 2
+
+      if (target_size/2 != (increase_x+widthX)):
+        print('error', target_size, (increase_x+widthX))
+
+
+      if (target_size/2 != (increase_y+widthY)):
+        print('error', target_size, (increase_y+widthY))
+
+
+    if just_z:
+
+      increase_xy = 0
+      bbox[0] = 0
+      bbox[1] = 512
+      bbox[2] = 0
+      bbox[3] = 512
+
 
     # crop label and image according to bbox but make it a little larger
     label_cropped = label[bbox[0]-increase_xy:bbox[1]+increase_xy, 
@@ -111,13 +146,31 @@ class Util:
         plt.imshow(masked, cmap='jet', interpolation='none', alpha=0.7) 
 
   @staticmethod
+  def zoom(image, label, spacing, order=0):
+    '''
+    upsample image to 1,1,2 voxel size
+    '''
+    image_zoomed = scipy.ndimage.zoom(image, [1/spacing[1],1/spacing[0],2/spacing[2]], order=order)
+    label_zoomed = scipy.ndimage.zoom(label, [1/spacing[1],1/spacing[0],2/spacing[2]], order=order)
+
+    return image_zoomed, label_zoomed
+
+
+  @staticmethod
   def overview(datapath='/home/d/Dropbox/RESEARCH/CAROTID/DATA/Nathan Arnett Calcification/'):
 
     DATASETS = sorted([v for v in os.listdir(datapath) if os.path.isdir(datapath + v)])
 
     for i,d in enumerate(DATASETS):
 
-      image, label = Util.load(i)
+      image_with_header, label_with_header = Util.load(i, datapath=datapath, with_header=True)
+
+      spacing = [image_with_header[1]['space directions'][0,0],
+                 image_with_header[1]['space directions'][1,1],
+                 image_with_header[1]['space directions'][2,2]]
+      
+      image = image_with_header[0]
+      label = label_with_header[0]
 
       # crop according to all annotations
       image_cropped, label_cropped = Util.crop(image, label)
@@ -125,7 +178,9 @@ class Util:
       # remove all slices without annotations
       image_filtered, label_filtered = Util.filter(image_cropped, label_cropped)
 
-      Util.view(image_filtered, label_filtered, title=d)
+      image_zoomed, label_zoomed = Util.zoom(image_filtered, label_filtered, spacing)
+
+      Util.view(image_zoomed, label_zoomed, title=d)
 
   @staticmethod
   def pad(images, labels):
@@ -160,5 +215,3 @@ class Util:
         currentslice += 1
 
     return padded_images, padded_labels
-
-
