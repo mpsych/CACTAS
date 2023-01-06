@@ -49,13 +49,26 @@ class Util:
 
       increase_x = (target_size - widthX) // 2
       increase_y = (target_size - widthY) // 2
+      # print(bbox)
+      # print(widthY, widthX, increase_x, increase_y)
 
-      if (target_size/2 != (increase_x+widthX)):
-        print('error', target_size, (increase_x+widthX))
+      # if (target_size/2 != (increase_x+widthX)):
+      #   print('error', target_size, (increase_x+widthX))
 
 
-      if (target_size/2 != (increase_y+widthY)):
-        print('error', target_size, (increase_y+widthY))
+      # if (target_size/2 != (increase_y+widthY)):
+      #   print('error', target_size, (increase_y+widthY))
+
+      bufferY = 0
+      if (bbox[0]-increase_y + bbox[1]+increase_y) != target_size:
+        bufferY = 1
+
+      bufferX = 0
+      if (bbox[2]-increase_x + bbox[3]+increase_x) != target_size:
+        bufferX = 1
+
+
+
 
 
     if just_z:
@@ -68,12 +81,14 @@ class Util:
 
 
     # crop label and image according to bbox but make it a little larger
-    label_cropped = label[bbox[0]-increase_xy:bbox[1]+increase_xy, 
-                          bbox[2]-increase_xy:bbox[3]+increase_xy,
+    label_cropped = label[bbox[0]-increase_y:bbox[1]+increase_y+bufferY, 
+                          bbox[2]-increase_x:bbox[3]+increase_x+bufferX,
                           bbox[4]-increase_z:bbox[5]+increase_z]
-    image_cropped = image[bbox[0]-increase_xy:bbox[1]+increase_xy, 
-                          bbox[2]-increase_xy:bbox[3]+increase_xy,
+    image_cropped = image[bbox[0]-increase_y:bbox[1]+increase_y+bufferY, 
+                          bbox[2]-increase_x:bbox[3]+increase_x+bufferX,
                           bbox[4]-increase_z:bbox[5]+increase_z]
+
+    # print(label_cropped.shape)
 
     return image_cropped, label_cropped
 
@@ -114,7 +129,7 @@ class Util:
     return label_bin
 
   @staticmethod
-  def view(image, label, alpha=0.7, title=None):
+  def view(image, label, alpha=0.7, title=None, vmin=-600, vmax=1000):
     '''
     '''
 
@@ -140,10 +155,10 @@ class Util:
       plt.axis('off')
 
       if slices > 1:
-        plt.imshow(image[:,:,i], cmap='gray', vmin=-600, vmax=1000)
+        plt.imshow(image[:,:,i], cmap='gray', vmin=vmin, vmax=vmax)
         plt.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=0.7) 
       else:
-        plt.imshow(image, cmap='gray', vmin=-600, vmax=1000)
+        plt.imshow(image, cmap='gray', vmin=vmin, vmax=vmax)
         plt.imshow(masked, cmap='jet', interpolation='none', alpha=0.7) 
 
   @staticmethod
@@ -182,6 +197,16 @@ class Util:
       image_zoomed, label_zoomed = Util.zoom(image_filtered, label_filtered, spacing)
 
       Util.view(image_zoomed, label_zoomed, title=d)
+
+  @staticmethod
+  def normalize(image):
+    '''
+    '''
+    image_normalized = image.copy().astype(np.float64)
+
+    image_normalized = (image_normalized - image_normalized.min()) / (image_normalized.max() - image_normalized.min())
+
+    return image_normalized
 
   @staticmethod
   def pad(images, labels, force_512=True, force_power_of_2=True, force_square=True, center=True):
