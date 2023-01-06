@@ -1,5 +1,6 @@
 import os
 import nrrd
+import math
 import mahotas as mh
 import numpy as np
 import matplotlib
@@ -201,8 +202,8 @@ class Util:
       slicecount += i.shape[2] # running number of slices
 
     if force_power_of_2:
-      maxY = pow(2, ceil(log(maxY)/log(2)));
-      maxX = pow(2, ceil(log(maxX)/log(2)));
+      maxY = pow(2, math.ceil(log(maxY)/log(2)));
+      maxX = pow(2, math.ceil(log(maxX)/log(2)));
 
     padded_images = np.zeros((slicecount, maxY, maxX), dtype=images[0].dtype)
     padded_labels = np.zeros((slicecount, maxY, maxX), dtype=labels[0].dtype)
