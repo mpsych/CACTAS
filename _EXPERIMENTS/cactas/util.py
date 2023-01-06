@@ -62,9 +62,9 @@ class Util:
 
       increase_xy = 0
       bbox[0] = 0
-      bbox[1] = 512
+      bbox[1] = image.shape[0]
       bbox[2] = 0
-      bbox[3] = 512
+      bbox[3] = image.shape[1]
 
 
     # crop label and image according to bbox but make it a little larger
@@ -209,6 +209,11 @@ class Util:
       maxY = max(maxY, maxX)
       maxX = max(maxY, maxX)
 
+    startY = 0
+    startX = 0
+
+
+
     padded_images = np.zeros((slicecount, maxY, maxX), dtype=images[0].dtype)
     padded_labels = np.zeros((slicecount, maxY, maxX), dtype=labels[0].dtype)
 
@@ -218,8 +223,14 @@ class Util:
 
       for z in range(images[i].shape[2]):
 
-        padded_images[currentslice, 0:img.shape[0], 0:img.shape[1]] = images[i][:,:,z] 
-        padded_labels[currentslice, 0:img.shape[0], 0:img.shape[1]] = labels[i][:,:,z]
+
+        if center:
+
+          startY = (maxY - img.shape[0]) // 2
+          startX = (maxX - img.shape[1]) // 2
+
+        padded_images[currentslice, startY:img.shape[0], startX:img.shape[1]] = images[i][:,:,z] 
+        padded_labels[currentslice, startY:img.shape[0], startX:img.shape[1]] = labels[i][:,:,z]
 
         currentslice += 1
 
