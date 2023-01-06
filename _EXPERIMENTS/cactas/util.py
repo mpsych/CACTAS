@@ -184,7 +184,7 @@ class Util:
       Util.view(image_zoomed, label_zoomed, title=d)
 
   @staticmethod
-  def pad(images, labels, force_power_of_2=True, force_square=True, center=True):
+  def pad(images, labels, force_512=True, force_power_of_2=True, force_square=True, center=True):
     '''
     images and labels need to be a list
 
@@ -203,6 +203,10 @@ class Util:
       maxY = max(maxY, i.shape[0])
       maxX = max(maxX, i.shape[1])
       slicecount += i.shape[2] # running number of slices
+
+    if force_512:
+      maxY = 512
+      maxX = 512
 
     if force_power_of_2:
       maxY = pow(2, math.ceil(math.log(maxY)/math.log(2)));
