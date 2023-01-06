@@ -184,7 +184,7 @@ class Util:
       Util.view(image_zoomed, label_zoomed, title=d)
 
   @staticmethod
-  def pad(images, labels, force_power_of_2=True, force_square=True):
+  def pad(images, labels, force_power_of_2=True, force_square=True, center=True):
     '''
     images and labels need to be a list
 
