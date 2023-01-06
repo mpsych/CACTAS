@@ -184,7 +184,7 @@ class Util:
       Util.view(image_zoomed, label_zoomed, title=d)
 
   @staticmethod
-  def pad(images, labels, force_power_of_2=True):
+  def pad(images, labels, force_power_of_2=True, force_square=True):
     '''
     images and labels need to be a list
 
@@ -204,6 +204,10 @@ class Util:
     if force_power_of_2:
       maxY = pow(2, math.ceil(math.log(maxY)/math.log(2)));
       maxX = pow(2, math.ceil(math.log(maxX)/math.log(2)));
+
+    if force_square:
+      maxY = max(maxY, maxX)
+      maxX = max(maxY, maxX)
 
     padded_images = np.zeros((slicecount, maxY, maxX), dtype=images[0].dtype)
     padded_labels = np.zeros((slicecount, maxY, maxX), dtype=labels[0].dtype)
