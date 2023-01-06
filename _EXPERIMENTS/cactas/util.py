@@ -190,6 +190,9 @@ class Util:
 
     returns padded numpy array for both
     '''
+    print('forcing power of 2', force_power_of_2)
+    print('forcing square', force_square)
+    print('centering', center)
 
     maxX = 0
     maxY = 0
@@ -228,9 +231,10 @@ class Util:
 
           startY = (maxY - img.shape[0]) // 2
           startX = (maxX - img.shape[1]) // 2
+          # print(startY, startX, maxY, maxX)
 
-        padded_images[currentslice, startY:img.shape[0], startX:img.shape[1]] = images[i][:,:,z] 
-        padded_labels[currentslice, startY:img.shape[0], startX:img.shape[1]] = labels[i][:,:,z]
+        padded_images[currentslice, startY:startY+img.shape[0], startX:startX+img.shape[1]] = images[i][:,:,z] 
+        padded_labels[currentslice, startY:startY+img.shape[0], startX:startX+img.shape[1]] = labels[i][:,:,z]
 
         currentslice += 1
 
