@@ -183,7 +183,7 @@ class Util:
       Util.view(image_zoomed, label_zoomed, title=d)
 
   @staticmethod
-  def pad(images, labels):
+  def pad(images, labels, force_power_of_2=True):
     '''
     images and labels need to be a list
 
@@ -199,6 +199,10 @@ class Util:
       maxY = max(maxY, i.shape[0])
       maxX = max(maxX, i.shape[1])
       slicecount += i.shape[2] # running number of slices
+
+    if force_power_of_2:
+      maxY = pow(2, ceil(log(maxY)/log(2)));
+      maxX = pow(2, ceil(log(maxX)/log(2)));
 
     padded_images = np.zeros((slicecount, maxY, maxX), dtype=images[0].dtype)
     padded_labels = np.zeros((slicecount, maxY, maxX), dtype=labels[0].dtype)
