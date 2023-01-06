@@ -57,7 +57,7 @@ def train(model, imgs_train, imgs_mask_train, imgs_test, imgs_mask_test, model_n
         os.mkdir(model_name)
 
     sname = model_name + '/weights.{epoch:02d}-{loss:.2f}.hdf5'
-    model_checkpoint = ModelCheckpoint(sname, monitor='val_loss',verbose=1, save_best_only=False, save_freq=5)
+    model_checkpoint = ModelCheckpoint(sname, monitor='val_loss',verbose=1, save_best_only=True, save_freq=5)
     print('saving model checkpoints in', model_name + '/')
     
     logfile_path = model_name + '/log.txt'
