@@ -167,8 +167,6 @@ H.Annotator.prototype.grow = function(i, j, k) {
       }
     }
   }
-
-  H.V.v.refresh();
 };
 
 addEventListener('keydown', (e) => {
