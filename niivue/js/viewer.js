@@ -35,7 +35,7 @@ H.Viewer = function(element, url) {
 
   // TODO zoom?
   nv.setSliceMM(true);
-  nv.opts.dragMode = nv.dragModes.pan;
+  nv.opts.dragMode = nv.dragModes.slicer3D;
 
   nv.onImageLoaded = function() {
 
