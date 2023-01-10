@@ -151,6 +151,8 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
 };
 
-
+H.Drawer.prototype.save = function () {
+  this.V.v.labelmap.save()
+}
 
 

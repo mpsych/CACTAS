@@ -197,4 +197,9 @@ addEventListener('keydown', (e) => {
       H.D.label--;
     }
   }
+
+  // save: 'S' keypress
+  if (e.code == "KeyS") {
+    H.D.save();
+  }
 });

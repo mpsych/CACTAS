@@ -162,3 +162,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
 
 };
+
+H.Drawer.prototype.save = function () {
+  H.D.nv.saveImage('image.nii', true);
+};
