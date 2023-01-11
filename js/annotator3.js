@@ -167,8 +167,6 @@ H.Annotator.prototype.grow = function(i, j, k) {
       }
     }
   }
-
-  H.V.v.refresh();
 };
 
 addEventListener('keydown', (e) => {
@@ -198,5 +196,10 @@ addEventListener('keydown', (e) => {
       // to reuse the same label
       H.D.label--;
     }
+  }
+
+  // save: 'S' keypress
+  if (e.code == "KeyS") {
+    H.D.save();
   }
 });
