@@ -1,0 +1,52 @@
+<html>
+
+    <head>
+
+        <script type="text/javascript" src="https://niivue.github.io/niivue/features/niivue.umd.js"></script>
+        
+        <link rel="stylesheet" href="css/main.css">
+
+        <script type="text/javascript">
+
+        window.onload = function() {
+
+
+
+            var data = [{
+            url: '../data/esus12.nrrd',
+            colorMap: 'gray',
+            opacity: 1, 
+            visible: true
+            }];
+
+            nv1 = new niivue.Niivue({
+            onLocationChange:function(e) {
+
+                console.log(e);
+
+                nv1.setDrawingEnabled(1);
+
+            }
+            })
+
+
+            nv1.attachTo('viewer')
+            nv1.loadVolumes(data)
+
+
+
+        }
+
+
+
+        </script>
+
+    </head>
+
+    <body>
+        
+        <canvas id="viewer"></canvas>
+
+    </body>
+
+</html>
