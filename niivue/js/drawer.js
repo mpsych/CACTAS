@@ -15,13 +15,13 @@ H.Drawer = function (viewer) {
 
 H.Drawer.prototype.getLabelmapPixel = function (x, y, z) {
 
-  let dx = H.D.nv.volumes[0].dims[1];
-  let dy = H.D.nv.volumes[0].dims[2];
-  let dz = H.D.nv.volumes[0].dims[3];
+  let dx = H.D.nv.back.dims[1];
+  let dy = H.D.nv.back.dims[2];
+  let dz = H.D.nv.back.dims[3];
 
-  x = Math.min(Math.max(x, 0), dx - 1);
-  y = Math.min(Math.max(y, 0), dy - 1);
-  z = Math.min(Math.max(z, 0), dz - 1);
+  // x = Math.min(Math.max(x, 0), dx - 1);
+  // y = Math.min(Math.max(y, 0), dy - 1);
+  // z = Math.min(Math.max(z, 0), dz - 1);
 
   return H.D.nv.drawBitmap[x + y * dx + z * dx * dy];
 
@@ -29,13 +29,13 @@ H.Drawer.prototype.getLabelmapPixel = function (x, y, z) {
 
 H.Drawer.prototype.setLabelmapPixel = function (x, y, z, label) {
 
-  let dx = H.D.nv.volumes[0].dims[1];
-  let dy = H.D.nv.volumes[0].dims[2];
-  let dz = H.D.nv.volumes[0].dims[3];
+  let dx = H.D.nv.back.dims[1];
+  let dy = H.D.nv.back.dims[2];
+  let dz = H.D.nv.back.dims[3];
 
-  x = Math.min(Math.max(x, 0), dx - 1);
-  y = Math.min(Math.max(y, 0), dy - 1);
-  z = Math.min(Math.max(z, 0), dz - 1);
+  // x = Math.min(Math.max(x, 0), dx - 1);
+  // y = Math.min(Math.max(y, 0), dy - 1);
+  // z = Math.min(Math.max(z, 0), dz - 1);
 
   H.D.nv.drawBitmap[x + y * dx + z * dx * dy] = label;
 
@@ -43,13 +43,13 @@ H.Drawer.prototype.setLabelmapPixel = function (x, y, z, label) {
 
 H.Drawer.prototype.getVolumePixel = function(x, y, z) {
 
-  return H.D.nv.volumes[0].getValue(x,y,z);
+  return H.D.nv.back.getValue(x,y,z);
 
 };
 
 H.Drawer.prototype.getVolumeDimensions = function() {
 
-  return H.D.nv.volumes[0].dims.slice(1);
+  return H.D.nv.back.dims.slice(1);
 
 };
 
@@ -71,6 +71,8 @@ H.Drawer.prototype.setupInteraction = function () {
     this.nv.setDrawingEnabled(0);
 
     H.D.position = e['vox'];
+
+
 
     console.log(H.D.position)
 
@@ -124,6 +126,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
   var k = H.D.position[2];
 
   // i = 512 - i;
+  // j = 512 - j;
 
   // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
   // // console.log('newlabel', newLabel);
@@ -139,7 +142,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
   // H.A.thresholdedRegionGrowing(i, j, k, this.intensity);
 
   H.A.threshold = this.intensity;
-  H.A.intensity_max = H.D.nv.volumes[0].global_max;
+  H.A.intensity_max = H.D.nv.back.global_max;
   H.A.threshold_tolerance = 30;
   H.A.label_to_draw = H.D.label;
   H.A.mode = H.Annotator.MODES.GROW;

@@ -3,8 +3,8 @@ H.version = '0.1';
 
 window.onload = function() {
 
-  var url = '../data/avf.nii.gz';
-  // var url = '../data/esus12.nrrd';
+  // var url = '../data/avf.nii.gz';
+  var url = '../data/esus12.nrrd';
   // var url = '../data/plaque.nii.gz';
 
   H.V = new H.Viewer( document.getElementById('viewer'), url );

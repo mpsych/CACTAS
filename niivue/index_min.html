@@ -16,18 +16,36 @@
             url: '../data/esus12.nrrd',
             colorMap: 'gray',
             opacity: 1, 
-            visible: true
+            visible: true,
+            cal_min: -500,
+            cal_max: 1600
             }];
 
             nv1 = new niivue.Niivue({
-            onLocationChange:function(e) {
+            onLocationChange: function(e) {
 
-                console.log(e);
+                console.log(e.vox);
 
-                nv1.setDrawingEnabled(1);
 
-            }
-            })
+                if (!nv1.opts.drawingEnabled) {
+                  nv1.setDrawingEnabled(1);
+                }
+              
+                let x = data.vox[0];
+                let y = data.vox[1];
+                let z = data.vox[2];
+                let dx = nv1.back.dims[1];
+                let dy = nv1.back.dims[2];
+                let dz = nv1.back.dims[3];
+
+                nv1.drawBitmap[x + y * dx + z * dx * dy] = 1;
+                nv1.refreshDrawing(true);
+              
+
+              }
+            });
+
+            nv1.opts.dragMode = nv1.dragModes.slicer3D;
 
 
             nv1.attachTo('viewer')
