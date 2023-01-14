@@ -20,9 +20,6 @@ H.Viewer = function(element, url) {
   this.r_z = r_z;
 
   var v = new X.volume();
-  // v.file = '../../data/plaque_normalized.nii.gz';
-  // v.file = '../data/avf.nii.gz';
-  // v.file = '../data/esus12.nrrd';
   v.file = url;
 
   r_x.add(v);

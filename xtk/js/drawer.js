@@ -40,12 +40,6 @@ H.Drawer.prototype.getVolumeDimensions = function() {
 H.Drawer.prototype.setupInteraction = function () {
 
   var r = this.viewer.r;
-  // console.log(r.fd);
-  // r.fd.onclick = function(e) {
-
-  //   console.log(e.clientX, e.clientY);
-
-  // }
 
 
   r.interactor.onMouseDown = this.onMouseDown.bind(this);
@@ -70,10 +64,6 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
 H.Drawer.prototype.onMouseMove = function (e) {
 
-  // if (!e.ctrlKey) return;
-
-  // if (!this.leftDown) return;
-
   var r = this.viewer.r;
   var v = this.viewer.v;
 
@@ -81,19 +71,12 @@ H.Drawer.prototype.onMouseMove = function (e) {
     e.cancel = true; // no window/level adjustment
   }
 
-  aaa = e
-
-  // console.log(e.clientX, e.clientY)
-
   ijk = r.xy2ijk(e.offsetX, e.offsetY)
   if (!ijk) return;
-
 
   let i = Math.max(0, ijk[1][0].toFixed(0));
   let j = Math.max(0, ijk[1][1].toFixed(0));
   let k = Math.max(0, ijk[1][2].toFixed(0));
-
-  // v.labelmap.setPixel(i, j, k, this.label);
 
   this.i = i;
   this.j = j;
@@ -109,50 +92,35 @@ H.Drawer.prototype.onMouseUp = function (e) {
     return;
   }
 
-
-
   this.leftDown = false;
-
-
-
-  // if (!e.ctrlKey) return;
-
-  // this.viewer.v.refresh();
 
   let i = this.i;
   let j = this.j;
   let k = this.k;
 
-  console.log(i,j,k)
-
   this.intensity = this.viewer.v.getPixel(i, j, k);
-
-  // H.A.thresholdedRegionGrowing(i, j, k, this.intensity);
 
   H.A.threshold = this.intensity;
   H.A.intensity_max = H.V.v.max;
   H.A.threshold_tolerance = 30;
   H.A.label_to_draw = H.D.label;
-  H.A.mode = H.Annotator.MODES.GROW;
 
   H.A.grow(i, j, k);
 
-  // let newLabel = H.A.findAdjacentAnnotation(i, j, k);
-  // if (newLabel) {
-  //   // console.log(newLabel);
-  //   [i, j, k] = newLabel;
-  //   H.A.mergeAnnotations(i, j, k);
-  // }
+  this.refresh();
 
-  // H.A.mode = H.Annotator.MODES.MERGE;
-  // H.A.grow(i, j, k);
+};
 
-  this.viewer.v.refresh();
+H.Drawer.prototype.refresh = function() {
+
+  H.V.v.refresh();
 
 };
 
 H.Drawer.prototype.save = function () {
-  this.V.v.labelmap.save()
-}
+  
+  H.V.v.labelmap.save();
+
+};
 
 

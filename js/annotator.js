@@ -1,143 +1,195 @@
 var H = H || {};
 
-// 8 neighbor directions
-const dk = [1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 0, 1, 1, 0, -1, -1, -1, 0, 1, 0];
-const di = [0, -1, -1, -1, 0, 1, 1, 1, 0, -1, -1, -1, 0, 1, 1, 1, 0, 0, -1, -1, -1, 0, 1, 1, 1, 0];
-const dj = [0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-
-
 H.Annotator = function () {
 
-  this.getPixel = null;
-  this.setPixel = null;
+  this.getLabelmapPixel = null;
+  this.setLabelmapPixel = null;
 
-  this.label = 0;
+  this.getVolumePixel = null;
+
+  this.getVolumeDimensions = null;
+
+  this.visited = [];
+
+  this.intensity_max = -1;
+
+  this.threshold = null;
+  this.threshold_tolerance = null;
+
+  this.labels = {};
+  this.labels_to_merge = {};
+
+  // 26 neighbor directions (9 + 8 + 9)
+  this.di = [0, -1, -1, -1,  0,  1, 1, 1,  0, -1, -1, -1,  0,  1,  1,  1,  0, 0, -1, -1, -1,  0,  1, 1, 1, 0];
+  this.dj = [0,  0,  0,  0,  0,  0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1,  1,  1,  1,  1,  1, 1, 1, 1];  
+  this.dk = [1,  1,  0, -1, -1, -1, 0, 1,  1,  1,  0, -1, -1, -1,  0,  1,  0, 1,  1,  0, -1, -1, -1, 0, 1, 0];
+
+  // 6 neighbor directions (1 + 4 + 1)
+  this.di = [0,  0,  1, -1, 0,  0];
+  this.dj = [0,  0,  0,  0, 1, -1];
+  this.dk = [1,  -1, 0,  0, 0,  0];
+
+
 
 };
 
 
+H.Annotator.prototype.grow = function(i, j, k) {
+
+  // inspired by
+  // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
 
 
-// find existing adjacent annotation
-// return ijk coords of where an existing annotation was encountered
-H.Annotator.prototype.findAdjacentAnnotation = function (i, j, k) {
+  this.visited = [];
 
-  var visited = [];
+  var dimensions = this.getVolumeDimensions();
 
-  return this.findAnnotationRecursive(i, j, k, visited);
+  var point_list = [];
+  point_list.push([i, j, k]);
 
-};
+  this.labels[H.D.label] = [];
+  this.labels_to_merge = {};
+
+  var counter = 0;
+
+  while( point_list.length != 0) {
+
+    if (counter++ > 20000) {
+      console.log('canceled!')
+      break;
+    }
+
+    var this_point = point_list.pop();
+
+    var i = this_point[0];
+    var j = this_point[1];
+    var k = this_point[2];
+
+    //
+    this.visited.push([i, j, k]);
+    this.setLabelmapPixel(i, j, k, H.D.label);
+    this.labels[H.D.label].push([i, j, k]);
 
 
-H.Annotator.prototype.findAnnotationRecursive = function (i, j, k, visited) {
+    for (var step = 0; step < 6; step++) {
 
-  let label = this.getPixel(i, j, k);
+      var new_ijk = [i + this.di[step], 
+                     j + this.dj[step],
+                     k + this.dk[step]];
 
-  visited.push([i, j, k]);
+      if (new_ijk[0] < 0 || new_ijk[0] >= dimensions[0] || 
+          new_ijk[1] < 0 || new_ijk[1] >= dimensions[1] ||
+          new_ijk[2] < 0 || new_ijk[2] >= dimensions[2]) {
 
-  if (label != H.D.label) { // not sure if using H.D is clean but it works
+        // out of bounds
+        continue;
 
-    // v.refresh();
-    return [i, j, k];
+      }
 
-  } else {
+      // // check if we visited that coordinate before
+      var visited = false;
+      var visited_length = this.visited.length;
+      for (var v=0; v<visited_length; v++) {
 
-    for (let x = 0; x < 26; x++) {
+        var q = this.visited[v];
+        if (q[0] == new_ijk[0] && q[1] == new_ijk[1] && q[2] == new_ijk[2]) {
+          
+          // we have been here
+          // ignore and jump out
+          visited = true;
+          break;
 
-      let next_px = [i + di[x], j + dj[x], k + dk[x]];
+        } 
 
-      if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i]))) {
+      }
 
-        if (this.getPixel(i + di[x], j + dj[x], k + dk[x]) != 0) {
+      if (!visited) {
 
-          let r = this.findAnnotationRecursive(i + di[x], j + dj[x], k + dk[x], visited);
+        var intensity = this.getVolumePixel(new_ijk[0], new_ijk[1], new_ijk[2]);
 
-          if (r != null) return r;
+        var old_label = this.getLabelmapPixel(new_ijk[0], new_ijk[1], new_ijk[2]);
+
+        if (old_label != 0 && old_label != H.D.label) {
+
+          this.labels_to_merge[old_label] = true;
+
+        } else {
+
+          if ((intensity >= this.threshold) || (Math.abs(intensity-this.threshold) <= (this.threshold_tolerance / 100.0 * this.threshold))) {
+
+            point_list.push(new_ijk);
+
+          }
 
         }
 
-      }
+      } 
+
 
     }
 
-    return null;
+  };
 
-  }
+  console.log('Found labels to merge', this.labels_to_merge);
 
-};
+  // merge labels
+  // only if there are labels to merge
+  if (Object.keys(this.labels_to_merge).length > 0) {
 
+    let label_color_to_inherit = Object.keys(this.labels_to_merge)[0];
+    let current_label = H.D.label;
 
+    // a list of all labels that need to be the same color
+    // current label + all labels that were merged
+    let labels_to_relabel = [current_label.toString(), ...Object.keys(this.labels_to_merge)];
 
-// takes a pixel, spreads its color to all adjacent pixels
-H.Annotator.prototype.mergeAnnotations = function (i, j, k) {
+    for (let label of labels_to_relabel) {
 
-  var label = this.getPixel(i, j, k);
+        console.log(`Relabling ${label}`);
 
-  var visited = [];
+        for (let pt of this.labels[label]) {
 
-  this.mergeRecursive(i, j, k, visited, label);
+          let i, j, k;
 
-};
+          [i, j, k] = pt;
 
-
-H.Annotator.prototype.mergeRecursive = function (i, j, k, visited, label) {
-
-  visited.push([i, j, k]);
-
-  for (let x = 0; x < 26; x++) {
-
-    let next_px = [i + di[x], j + dj[x], k + dk[x]];
-
-    if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i]))) {
-
-      if (this.getPixel(i + di[x], j + dj[x], k + dk[x]) != 0) {
-
-        this.setPixel(i + di[x], j + dj[x], k + dk[x], label);
-
-        let r = this.mergeRecursive(i + di[x], j + dj[x], k + dk[x], visited, label);
-
-      }
-
-    }
-
-  }
-
-};
-
-H.Annotator.prototype.thresholdedRegionGrowing = function (i, j, k, intensity) {
-  let visited = [];
-
-  let label = this.getPixel(i, j, k);
-
-  let threshold = intensity * 0.5;
-
-  this.thresholdedRegionGrowingRecursive(i, j, k, visited, label, threshold);
-};
-
-H.Annotator.prototype.thresholdedRegionGrowingRecursive = function (i, j, k, visited, label, threshold) {
-  visited.push([i, j, k]);
-
-  for (let x = 0; x < 26; x++) {
-
-    next_px = [i + di[x], j + dj[x], k + dk[x]];
-
-    if (next_px[0] >= 0 && next_px[0] < H.V.v.dimensions[0]
-      && next_px[1] >= 0 && next_px[1] < H.V.v.dimensions[1]
-      && next_px[2] >= 0 && next_px[2] < H.V.v.dimensions[2]) {
-
-      if (!visited.some(a => next_px.length && next_px.every((v, i) => v === a[i]))) {
-
-        let currentIntensity = H.V.v.getPixel(i + di[x], j + dj[x], k + dk[x]);
-
-        if (currentIntensity > threshold) {
-
-          // console.log(`(${i}, ${j}, ${k})=${currentIntensity} > ${threshold}`)
-          this.setPixel(i + di[x], j + dj[x], k + dk[x], label);
-
-          let r = this.thresholdedRegionGrowingRecursive(i + di[x], j + dj[x], k + dk[x], visited, label, threshold);
-        }
+          this.setLabelmapPixel(i, j, k, label_color_to_inherit);
       }
     }
-
   }
 };
+
+addEventListener('keydown', (e) => {
+
+  // undo: 'Z' keypress
+  if (e.code == "KeyZ") {
+
+    // only undo if there are labels
+    if (Object.keys(H.A.labels).length > 0) {
+
+      let last_label = H.D.label;
+
+      console.log(`undo label ${last_label}`);
+
+      for (let pt of H.A.labels[last_label]) {
+
+        let i, j, k;
+        [i, j, k] = pt;
+
+        H.A.setLabelmapPixel(i, j, k, 0);
+      }
+
+      H.D.refresh();
+
+      delete H.A.labels[last_label];
+
+      // to reuse the same label
+      H.D.label--;
+    }
+  }
+
+  // save: 'S' keypress
+  if (e.code == "KeyS") {
+    H.D.save();
+  }
+});

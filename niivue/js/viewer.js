@@ -15,9 +15,8 @@ H.Viewer = function(element, url) {
   // nv.setSliceType(nv.sliceTypeCoronal);
   
   //dissable crosshair
-  nv.setCrosshairColor([0, 0, 0, 0]);
-
-  nv.opts.crosshairWidth = 0;
+  nv.setCrosshairColor([1, 0, 0, 0.1]);
+  nv.opts.crosshairWidth = 1;
 
 
   var data = [{
@@ -33,37 +32,10 @@ H.Viewer = function(element, url) {
 
   nv.loadVolumes(data);
 
-  // TODO zoom?
   nv.setSliceMM(true);
   nv.opts.dragMode = nv.dragModes.slicer3D;
 
-  nv.onImageLoaded = function() {
-
-    // nv.volumes[0].cal_min  = -500
-    // nv.volumes[0].cal_max = 1600
-    // nv.updateGLVolume();
-
-    // nv.drawScene();
-
-  };
-
-  // nv.createOnLocationChange();
-
-  // nv.onLocationChange = function(e) {
-  //   console.log(e)
-  // }
-
   this.nv = nv;
-
-};
-
-H.Viewer.prototype.changeView = function(orientation) {
-
-  // only allow 0-4 as input
-
-  var type = eval('nv.sliceType' + orientation);
-
-  nv.setSliceType(type);
 
 };
 

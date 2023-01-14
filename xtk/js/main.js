@@ -18,13 +18,3 @@ window.onload = function() {
   
 };
 
-function changeView() {
-
-    var combobox = document.getElementById('view');
-    var orientation = combobox.selectedOptions[0].outerText;
-
-    H.V.changeView(orientation);
-
-};
-
-
