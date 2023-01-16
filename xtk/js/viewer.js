@@ -85,29 +85,3 @@ H.Viewer.prototype.onInitializationCompleted = function() {
 
 
 };
-
-
-H.Viewer.prototype.changeView = function(orientation) {
-
-  // Axial = document.getElementById('viewerX');
-  // Sagittal = document.getElementById('viewerY');
-  // Coronal = document.getElementById('viewerZ');
-
-  // Axial.style.display = 'none';
-  // Sagittal.style.display = 'none';
-  // Coronal.style.display = 'none';
-
-  // eval(orientation+'.style.display = "block";');
-
-  // if (orientation == 'Axial') {
-  //   this.r = this.r_x;
-  // } else if (orientation == 'Sagittal') {
-  //   this.r = this.r_y;
-  // } else if (orientation == 'Coronal') {
-  //   this.r = this.r_z;
-  // }
-
-  // H.D.setupInteraction();
-
-};
-

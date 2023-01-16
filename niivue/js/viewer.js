@@ -2,9 +2,7 @@ H.Viewer = function(element, url) {
   
   //instance of niivue
   nv = new niivue.Niivue({    
-  textHeight : 0.01,    onLocationChange: function(e) {
-
-    },
+    textHeight : 0.01,
     loadingText: 'please wait',
   });
 
@@ -14,9 +12,11 @@ H.Viewer = function(element, url) {
   //set default view to coronal
   // nv.setSliceType(nv.sliceTypeCoronal);
   
-  //dissable crosshair
-  nv.setCrosshairColor([1, 0, 0, 0.1]);
+  // crosshair
+  nv.setCrosshairColor([0, 1, 1, 0.1]);
   nv.opts.crosshairWidth = 1;
+  nv.opts.show3Dcrosshair = true;
+
 
 
   var data = [{
@@ -37,5 +37,18 @@ H.Viewer = function(element, url) {
 
   this.nv = nv;
 
+  this.view = 4;
+
 };
 
+H.Viewer.prototype.changeView = function() {
+
+  this.view++;
+
+  if (this.view > 4) {
+    this.view = 0;
+  }
+
+  this.nv.setSliceType(this.view);
+
+};

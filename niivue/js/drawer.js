@@ -64,17 +64,13 @@ H.Drawer.prototype.setupInteraction = function () {
 
     H.D.position = e['vox'];
 
-
-
-    // console.log(H.D.position)
-
   }.bind(this);
 
 
   this.nv.canvas.onmousedown = this.onMouseDown.bind(this);
   this.nv.canvas.onmousemove = this.onMouseMove.bind(this);
   this.nv.canvas.onmouseup = this.onMouseUp.bind(this);
-
+  window.onkeypress = this.onKeyPress.bind(this);
 
 };
 
@@ -83,12 +79,20 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
   H.D.leftDown = true;
 
+  if (!e.ctrlKey) return;
+
   H.D.label += 1;
 
 };
 
 
 H.Drawer.prototype.onMouseMove = function (e) {
+
+  if (e.ctrlKey) {
+    this.nv.canvas.style.cursor = 'crosshair';
+  } else {
+    this.nv.canvas.style.cursor = 'default';
+  }
 
 };
 
@@ -98,6 +102,8 @@ H.Drawer.prototype.onMouseUp = function (e) {
   H.D.leftDown = false;
 
   if (!e.ctrlKey) return;
+
+  this.nv.canvas.style.cursor = 'wait';
 
   var i = H.D.position[0];
   var j = H.D.position[1];
@@ -114,7 +120,29 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.D.refresh();
 
+  this.nv.canvas.style.cursor = 'default';
+
 };
+
+
+H.Drawer.prototype.onKeyPress = function(e) {
+
+  if (e.code == 'Space') {
+    
+    H.V.changeView();
+
+  } else if (e.code == 'KeyZ') {
+
+    H.A.undo();
+
+  } else if (e.code == 'KeyS') {
+
+    H.D.save();
+
+  }
+
+};
+
 
 H.Drawer.prototype.refresh = function() {
 

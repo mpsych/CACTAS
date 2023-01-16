@@ -41,7 +41,6 @@ H.Drawer.prototype.setupInteraction = function () {
 
   var r = this.viewer.r;
 
-
   r.interactor.onMouseDown = this.onMouseDown.bind(this);
   r.interactor.onMouseMove = this.onMouseMove.bind(this);
   r.interactor.onMouseUp = this.onMouseUp.bind(this);
