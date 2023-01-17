@@ -24,6 +24,16 @@ def read_file(file):
 
     return data
 
+
+def binarize(data):
+
+    binarized = data.copy()
+    binarized[:] = 0
+    binarized[data > 0] = 1
+
+    return binarized
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('truth')
@@ -32,13 +42,14 @@ parser.add_argument('label')
 args = parser.parse_args()
 
 
-truth_data = read_file(args.truth)
-label_data = read_file(args.label)
+truth_data = binarize(read_file(args.truth))
+label_data = binarize(read_file(args.label))
 
 
 similarity = metrics.jaccard_score(truth_data.ravel(), 
-                                   label_data.ravel(), 
-                                   average="micro")
+                                   label_data.ravel(),
+
+                                   average="binary")
 
 print('Jaccard:', similarity)
 
