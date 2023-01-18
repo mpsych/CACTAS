@@ -70,6 +70,7 @@ H.Drawer.prototype.setupInteraction = function () {
   this.nv.canvas.onmousedown = this.onMouseDown.bind(this);
   this.nv.canvas.onmousemove = this.onMouseMove.bind(this);
   this.nv.canvas.onmouseup = this.onMouseUp.bind(this);
+  window.onkeypress = this.onKeyPress.bind(this);
   window.onkeydown = this.onKeyDown.bind(this);
 
 };
@@ -124,8 +125,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
 };
 
-
-H.Drawer.prototype.onKeyDown = function(e) {
+H.Drawer.prototype.onKeyPress = function(e) {
 
   if (e.code == 'Space') {
     
@@ -139,7 +139,14 @@ H.Drawer.prototype.onKeyDown = function(e) {
 
     H.D.save();
 
-  } else if (e.code == 'ArrowLeft') {
+  }  
+
+}
+
+
+H.Drawer.prototype.onKeyDown = function(e) {
+
+  if (e.code == 'ArrowLeft') {
 
     this.nv.moveCrosshairInVox(-1, 0, 0);
 
