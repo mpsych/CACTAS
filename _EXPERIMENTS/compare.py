@@ -15,7 +15,9 @@ def read_file(file):
         data = nrrd.read(file)[0]
         # print('nrrd', d)
     elif ext == 'nii':
-        data = nib.load(file)
+        data = nib.load(file).get_fdata()
+    elif ext == 'gz':
+        data = nib.load(file).get_fdata()
         # print(data)
         # data =  nib.Nifti2Image.from_filename(file)
     else:
