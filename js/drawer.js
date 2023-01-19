@@ -10,6 +10,8 @@ H.Drawer = function (viewer) {
   this.leftDown = false;
   this.position = null;
 
+  this.magicMode = false;
+
 };
 
 
@@ -82,6 +84,8 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
   if (!e.ctrlKey) return;
 
+  this.nv.canvas.style.cursor = 'wait';
+
   H.D.label += 1;
 
 };
@@ -103,8 +107,6 @@ H.Drawer.prototype.onMouseUp = function (e) {
   H.D.leftDown = false;
 
   if (!e.ctrlKey) return;
-
-  this.nv.canvas.style.cursor = 'wait';
 
   var i = H.D.position[0];
   var j = H.D.position[1];
@@ -135,48 +137,80 @@ H.Drawer.prototype.onKeyPress = function(e) {
 
     H.A.undo();
 
-  } else if (e.code == 'KeyS') {
+  } else if (e.code == 'KeyX') {
 
     H.D.save();
 
-  }  
-
-}
-
-
-H.Drawer.prototype.onKeyDown = function(e) {
-
-  if (e.code == 'ArrowLeft') {
+  } else if (e.code == 'KeyA') {
 
     this.nv.moveCrosshairInVox(-1, 0, 0);
 
-  } else if (e.code == 'ArrowRight') {
+  } else if (e.code == 'KeyD') {
 
     this.nv.moveCrosshairInVox(1, 0, 0);
 
-  } else if (e.code == 'ArrowDown') {
+  } else if (e.code == 'KeyS') {
 
     // anterior 
     this.nv.moveCrosshairInVox(0, 1, 0);
 
-  } else if (e.code == 'ArrowUp') {
+  } else if (e.code == 'KeyW') {
 
     // posterior 
     this.nv.moveCrosshairInVox(0, -1, 0);
 
+  } else if (e.code == 'KeyQ') {
+
+    if (!this.magicMode) {
+
+      // magic mode thanks to Chris 'The Beast' Rorden
+      // from: https://niivue.github.io/niivue/features/cactus.html
+      H.V.nv.volumes[0].colorMap = "ct_kidneys";
+      H.V.nv.volumes[0].cal_min = 80;
+      H.V.nv.volumes[0].cal_max = 480;
+      H.V.nv.updateGLVolume();
+
+      this.magicMode = true;
+
+    } else {
+
+      // TODO cleanup to avoid duplication
+
+      H.V.nv.volumes[0].colorMap = "gray";
+      H.V.nv.volumes[0].cal_min = -500;
+      H.V.nv.volumes[0].cal_max = 1600;
+      H.V.nv.updateGLVolume();
+
+      this.magicMode = false;
+
+    }
+
+
+
   }
 
-}
+
+};
+
+
+H.Drawer.prototype.onKeyDown = function(e) {
+
+};
 
 
 H.Drawer.prototype.refresh = function() {
 
   H.D.nv.refreshDrawing();
 
+  var unique_labels = [... new Set(H.D.nv.drawBitmap)].length-1;
+
+  document.getElementById('stats').innerHTML = unique_labels;
+
+
 };
 
 H.Drawer.prototype.save = function () {
 
-  H.D.nv.saveImage('image.nii', true);
+  H.D.nv.saveImage('image.nii.gz', true);
 
 };
