@@ -2,8 +2,9 @@ H.Viewer = function(element, url) {
   
   //instance of niivue
   nv = new niivue.Niivue({    
-    textHeight : 0.01,
+    textHeight : 0.02,
     loadingText: 'please wait',
+    rulerColor: [0, 1, 1, 0.1]
   });
 
   //attach object to viewer
@@ -14,7 +15,7 @@ H.Viewer = function(element, url) {
   
   // crosshair
   nv.setCrosshairColor([0, 1, 1, 0.1]);
-  nv.opts.crosshairWidth = 1;
+  nv.opts.crosshairWidth = 0.2;
   nv.opts.show3Dcrosshair = true;
 
 
@@ -26,9 +27,12 @@ H.Viewer = function(element, url) {
     colorMap: 'gray',
     opacity: 1, 
     visible: true,
-    cal_min: -500,
-    cal_max: 1600
+    cal_min: 130,
+    cal_max: 1000
   }];
+
+  nv.drawOpacity = 1.0;
+  nv.setDrawColormap("_slicer3d")
 
   nv.loadVolumes(data);
 

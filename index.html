@@ -18,21 +18,28 @@
 
     <body>
         
-        <canvas id="viewer"></canvas>
+        <canvas id='viewer'></canvas>
 
-        <div id="stats">0
+        <div id='tools' class='panel'>
+            <strong>Tolerance</strong>: <span id='tolerancelabel'>30</span><br>
+          <input type='range' min='1' max='50' value='30' id='tolerance' style='margin-top:5px'>
         </div>
 
-        <div id="info">
-            <strong>CTRL + Click</strong>: Label<br>
+        <div id='stats' class='panel'>0
+        </div>
+
+        <div id='info' class='panel'>
+            <strong>CTRL + L Click</strong>: Label<br>
+            <strong>SHIFT + R Click</strong>: Measure<br>
             <strong>Space</strong>: Change view<br>
+            <strong>ALT</strong>: Hide Labels<br>
             <strong>Q</strong>: MagicMode<br>
             <strong>Z</strong>: Undo<br>
             <strong>X</strong>: Save
         </div>
 
-        <div id="credits">
-            <strong><a href='https://github.com/mpsych/CACTAS/#readme' target=_blank>CACTAS v0.1</a></strong>
+        <div id='credits' class='panel'>
+            <strong><a href='https://github.com/mpsych/CACTAS/#readme' target=_blank>CACTAS v0.1b</a></strong>
         </div>
 
     </body>

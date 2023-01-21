@@ -10,6 +10,8 @@ H.Drawer = function (viewer) {
   this.leftDown = false;
   this.position = null;
 
+  this.tolerance = 30;
+
   this.magicMode = false;
 
 };
@@ -69,11 +71,23 @@ H.Drawer.prototype.setupInteraction = function () {
   }.bind(this);
 
 
+  document.getElementById('tolerance').oninput = this.onToleranceChange.bind(this);
+
   this.nv.canvas.onmousedown = this.onMouseDown.bind(this);
   this.nv.canvas.onmousemove = this.onMouseMove.bind(this);
   this.nv.canvas.onmouseup = this.onMouseUp.bind(this);
   window.onkeypress = this.onKeyPress.bind(this);
   window.onkeydown = this.onKeyDown.bind(this);
+  window.onkeyup = this.onKeyUp.bind(this);
+
+};
+
+
+H.Drawer.prototype.onToleranceChange = function(e) {
+
+  this.tolerance = parseInt(e.target.value, 10);
+
+  document.getElementById('tolerancelabel').innerText = this.tolerance;
 
 };
 
@@ -81,6 +95,17 @@ H.Drawer.prototype.setupInteraction = function () {
 H.Drawer.prototype.onMouseDown = function (e) {
 
   H.D.leftDown = true;
+
+  if (e.shiftKey) {
+
+    // activate measuring
+    H.V.nv.opts.dragMode = H.V.nv.dragModes.measurement;
+
+  } else {
+
+    H.V.nv.opts.dragMode = H.V.nv.dragModes.slicer3D;
+
+  }
 
   if (!e.ctrlKey) return;
 
@@ -116,7 +141,7 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.A.threshold = this.intensity;
   H.A.intensity_max = H.D.nv.back.global_max;
-  H.A.threshold_tolerance = 30;
+  H.A.threshold_tolerance = H.D.tolerance;
   H.A.label_to_draw = H.D.label;
 
   H.A.grow(i, j, k);
@@ -166,8 +191,8 @@ H.Drawer.prototype.onKeyPress = function(e) {
       // magic mode thanks to Chris 'The Beast' Rorden
       // from: https://niivue.github.io/niivue/features/cactus.html
       H.V.nv.volumes[0].colorMap = "ct_kidneys";
-      H.V.nv.volumes[0].cal_min = 80;
-      H.V.nv.volumes[0].cal_max = 480;
+      H.V.nv.volumes[0].cal_min = 130;
+      H.V.nv.volumes[0].cal_max = 1000;
       H.V.nv.updateGLVolume();
 
       this.magicMode = true;
@@ -177,8 +202,8 @@ H.Drawer.prototype.onKeyPress = function(e) {
       // TODO cleanup to avoid duplication
 
       H.V.nv.volumes[0].colorMap = "gray";
-      H.V.nv.volumes[0].cal_min = -500;
-      H.V.nv.volumes[0].cal_max = 1600;
+      H.V.nv.volumes[0].cal_min = 130;
+      H.V.nv.volumes[0].cal_max = 1000;
       H.V.nv.updateGLVolume();
 
       this.magicMode = false;
@@ -194,6 +219,25 @@ H.Drawer.prototype.onKeyPress = function(e) {
 
 
 H.Drawer.prototype.onKeyDown = function(e) {
+
+  if (e.key == 'Alt') {
+
+    H.V.nv.drawOpacity = 0.;
+    H.V.nv.updateGLVolume();
+
+  }
+
+};
+
+
+H.Drawer.prototype.onKeyUp = function(e) {
+
+  if (e.key == 'Alt') {
+
+    H.V.nv.drawOpacity = 1.0;
+    H.V.nv.updateGLVolume();
+
+  }
 
 };
 

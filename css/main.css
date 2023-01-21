@@ -51,35 +51,47 @@ a {
     position: absolute;
 }
 
-#info {
+.panel {
     position: absolute;
     background-color: rgba(0.0,0.0,0.0,0.5);
-    bottom: 0px;
-    left: 10px;
     padding: 10px;
     color: white;
     font-size: 10pt;
     z-index: 10000;
+}
+
+#info {
+    bottom: 0px;
+    left: 10px;
 }
 
 #credits {
-    position: absolute;
-    background-color: rgba(0.0,0.0,0.0,0.5);
     bottom: 0px;
     right: 10px;
-    padding: 10px;
-    color: white;
-    font-size: 10pt;
-    z-index: 10000;
 }
 
 #stats {
-    position: absolute;
-    background-color: rgba(0.0,0.0,0.0,0.5);
+
     top: 0px;
     right: 10px;
-    padding: 10px;
-    color: white;
-    font-size: 10pt;
-    z-index: 10000;
+}
+
+#tools {
+    top: 0px;
+    left: 10px;
+}
+
+#tolerance {
+    -webkit-appearance: none;
+    opacity: 1;
+    height: 2px;
+}
+
+#tolerance::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: cyan;
+    cursor: pointer;
 }
