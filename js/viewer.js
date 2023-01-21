@@ -21,8 +21,6 @@ H.Viewer = function(element, url) {
 
 
   var data = [{
-    // url: '../data/avf.nii.gz',
-    // url: '../data/esus12.nrrd',
     url: url,
     colorMap: 'gray',
     opacity: 1, 

@@ -12,6 +12,8 @@ H.Drawer = function (viewer) {
 
   this.tolerance = 30;
 
+  this.filename = 'label.nii.gz';
+
   this.magicMode = false;
 
 };
@@ -96,12 +98,19 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
   H.D.leftDown = true;
 
+  console.log(e);
+
   if (e.shiftKey) {
 
     // activate measuring
     H.V.nv.opts.dragMode = H.V.nv.dragModes.measurement;
 
-  } else {
+  } else if (e.altKey) {
+
+    // activate Window/Level
+    H.V.nv.opts.dragMode = H.V.nv.dragModes.contrast;
+
+  }else {
 
     H.V.nv.opts.dragMode = H.V.nv.dragModes.slicer3D;
 
@@ -255,6 +264,6 @@ H.Drawer.prototype.refresh = function() {
 
 H.Drawer.prototype.save = function () {
 
-  H.D.nv.saveImage('image.nii.gz', true);
+  H.D.nv.saveImage(H.D.filename, true);
 
 };
