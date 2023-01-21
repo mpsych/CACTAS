@@ -16,6 +16,8 @@ H.Drawer = function (viewer) {
 
   this.magicMode = false;
 
+  this.labelmap_buffer = null;
+
 };
 
 
@@ -98,8 +100,6 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
   H.D.leftDown = true;
 
-  console.log(e);
-
   if (e.shiftKey) {
 
     // activate measuring
@@ -157,6 +157,9 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.D.refresh();
 
+  // save NV undo map
+  H.V.nv.drawAddUndoBitmap();
+
   this.nv.canvas.style.cursor = 'default';
 
 };
@@ -169,7 +172,8 @@ H.Drawer.prototype.onKeyPress = function(e) {
 
   } else if (e.code == 'KeyZ') {
 
-    H.A.undo();
+    H.V.nv.drawUndo();
+    // H.A.undo();
 
   } else if (e.code == 'KeyX') {
 
@@ -199,20 +203,38 @@ H.Drawer.prototype.onKeyPress = function(e) {
 
       // magic mode thanks to Chris 'The Beast' Rorden
       // from: https://niivue.github.io/niivue/features/cactus.html
+      // H.V.nv.volumes[0].colorMap = "ct_kidneys";
+      // H.V.nv.volumes[0].cal_min = 130;
+      // H.V.nv.volumes[0].cal_max = 1000;
+      // H.V.nv.updateGLVolume();
+
+      this.labelmap_buffer = H.V.nv.drawBitmap.slice();
+
+      var binarized = new cv.Mat();
+      var labels = cv.matFromArray(H.V.nv.drawBitmap.length, 
+                                   1, cv.CV_8UC1, H.V.nv.drawBitmap);
+
+      cv.threshold(labels, binarized, 0, 2, cv.THRESH_BINARY);
+
+      H.V.nv.drawBitmap = binarized.data;
+
+      H.V.nv.setDrawColormap("_itksnap");
       H.V.nv.volumes[0].colorMap = "ct_kidneys";
-      H.V.nv.volumes[0].cal_min = 130;
-      H.V.nv.volumes[0].cal_max = 1000;
+      H.D.nv.refreshDrawing();
       H.V.nv.updateGLVolume();
+
 
       this.magicMode = true;
 
     } else {
 
       // TODO cleanup to avoid duplication
+      H.V.nv.drawBitmap = this.labelmap_buffer;
 
+      H.V.nv.setDrawColormap("_slicer3d");
       H.V.nv.volumes[0].colorMap = "gray";
-      H.V.nv.volumes[0].cal_min = 130;
-      H.V.nv.volumes[0].cal_max = 1000;
+      H.D.nv.refreshDrawing();
+
       H.V.nv.updateGLVolume();
 
       this.magicMode = false;

@@ -159,30 +159,3 @@ H.Annotator.prototype.grow = function(i, j, k) {
   }
 };
 
-H.Annotator.prototype.undo = function() {
-
-  // only undo if there are labels
-  if (Object.keys(H.A.labels).length > 0) {
-
-    let last_label = H.D.label;
-
-    console.log(`undo label ${last_label}`);
-
-    for (let pt of H.A.labels[last_label]) {
-
-      let i, j, k;
-      [i, j, k] = pt;
-
-      H.A.setLabelmapPixel(i, j, k, 0);
-    }
-
-    H.D.refresh();
-
-    delete H.A.labels[last_label];
-
-    // to reuse the same label
-    H.D.label--;
-  }
-
-};
-
