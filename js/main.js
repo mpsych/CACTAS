@@ -3,10 +3,15 @@ H.version = '0.1';
 
 window.onload = function() {
 
-  // var url = 'data/avf.nii.gz';
-  // var url = 'data/esus12.nrrd';
-  // var url = 'data/plaque.nii.gz';
-  var url = 'data/06.nrrd';
+  var url = 'data/avf.nii.gz';
+
+  var query = window.location.search;
+  var params = new URLSearchParams(query);
+  var data = params.get('data');
+
+  if (data) {
+    url = data;
+  }
 
   H.V = new H.Viewer( document.getElementById('viewer'), url );
   H.D = new H.Drawer( H.V ); // attach drawer
