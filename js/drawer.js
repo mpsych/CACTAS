@@ -253,7 +253,7 @@ H.Drawer.prototype.onKeyPress = function(e) {
 
       H.V.nv.setDrawColormap("_slicer3d");
       H.V.nv.volumes[0].colorMap = "gray";
-      var wl = H.V.getWLFromMinMax(444, 1500);
+      var wl = H.V.getWLFromMinMax(130, 1500);
       H.V.updateWL(wl[0], wl[1], true);
       H.D.nv.refreshDrawing();
 

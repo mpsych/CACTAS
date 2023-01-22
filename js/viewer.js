@@ -127,7 +127,7 @@ H.Viewer.prototype.updateWL = function(windoo, level, updateSlider) {
 H.Viewer.prototype.reset = function() {
 
   // now let's update WL
-  var wl = H.V.getWLFromMinMax(444, 1500); // HU BONE!
+  var wl = H.V.getWLFromMinMax(130, 1500); // HU BONE!
   H.V.updateWL(wl[0], wl[1], true); // propagate to UI + volume
 
 };
