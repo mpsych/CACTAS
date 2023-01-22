@@ -84,7 +84,8 @@ a {
 #tolerance {
     -webkit-appearance: none;
     opacity: 1;
-    height: 2px;
+    height: 3px;
+    width: 160px;
 }
 
 #tolerance::-webkit-slider-thumb {
@@ -94,4 +95,32 @@ a {
     height: 10px;
     background: cyan;
     cursor: pointer;
+}
+
+
+
+#wlslider {
+    border-radius: 0;
+    height:3px;
+    width: 160px;
+}
+
+#wlslider .noUi-handle {
+    border-radius: 0;
+    box-shadow: none;
+    width: 10px;
+    height: 10px;
+    background: cyan;
+    cursor: pointer;
+    top:-5px;
+    right:-5px;
+    border: none;
+}
+
+#wlslider .noUi-handle:before {
+    display:none;
+}
+
+#wlslider .noUi-handle:after {
+    display:none;
 }

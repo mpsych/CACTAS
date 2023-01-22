@@ -105,12 +105,12 @@ H.Drawer.prototype.onMouseDown = function (e) {
     // activate measuring
     H.V.nv.opts.dragMode = H.V.nv.dragModes.measurement;
 
-  } else if (e.altKey) {
+  // } else if (e.altKey) {
 
-    // activate Window/Level
-    H.V.nv.opts.dragMode = H.V.nv.dragModes.contrast;
+  //   // activate Window/Level
+  //   H.V.nv.opts.dragMode = H.V.nv.dragModes.contrast;
 
-  }else {
+  } else {
 
     H.V.nv.opts.dragMode = H.V.nv.dragModes.slicer3D;
 
@@ -139,6 +139,22 @@ H.Drawer.prototype.onMouseMove = function (e) {
 H.Drawer.prototype.onMouseUp = function (e) {
 
   H.D.leftDown = false;
+
+  if (e.altKey) {
+
+    // calculate specific W/L
+    var i = H.D.position[0];
+    var j = H.D.position[1];
+    var k = H.D.position[2];
+
+    var intensity = H.D.getVolumePixel(i, j, k);
+
+    // according to L. Saba 2009
+    var wl = [intensity*2.07, intensity*0.72];
+
+    H.V.updateWL(wl[0], wl[1], true);
+
+  }
 
   if (!e.ctrlKey) return;
 
@@ -197,6 +213,10 @@ H.Drawer.prototype.onKeyPress = function(e) {
     // posterior 
     this.nv.moveCrosshairInVox(0, -1, 0);
 
+  } else if (e.code == 'KeyR') {
+
+    H.V.reset();
+
   } else if (e.code == 'KeyQ') {
 
     if (!this.magicMode) {
@@ -233,6 +253,8 @@ H.Drawer.prototype.onKeyPress = function(e) {
 
       H.V.nv.setDrawColormap("_slicer3d");
       H.V.nv.volumes[0].colorMap = "gray";
+      var wl = H.V.getWLFromMinMax(444, 1500);
+      H.V.updateWL(wl[0], wl[1], true);
       H.D.nv.refreshDrawing();
 
       H.V.nv.updateGLVolume();

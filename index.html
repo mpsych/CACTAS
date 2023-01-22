@@ -9,9 +9,13 @@
         <script type="text/javascript" src="js/viewer.js"></script>
         <script type="text/javascript" src="js/drawer.js"></script>
 
+        <script type="text/javascript" src="js/nouislider.min.js"></script>
+        
         <script type="text/javascript" src="js/annotator.js"></script>
         
+        <link rel="stylesheet" href="css/nouislider.min.css">
         <link rel="stylesheet" href="css/main.css">
+
 
         <title>CACTAS</title>
 
@@ -23,7 +27,13 @@
 
         <div id='tools' class='panel'>
             <strong>Tolerance</strong>: <span id='tolerancelabel'>30</span><br>
-          <input type='range' min='1' max='50' value='30' id='tolerance' style='margin-top:5px'>
+          <input type='range' min='1' max='50' value='30' id='tolerance' style='margin-top:5px;margin-bottom:5px'>
+
+            <br>
+
+            <strong>Window/Level</strong>: <span id='windowlabel'></span><br>
+            <div id='wlslider' style='margin-top:5px;margin-bottom:5px'></div>
+
         </div>
 
         <div id='stats' class='panel'>0
@@ -31,12 +41,13 @@
 
         <div id='info' class='panel'>
             <strong>CTRL + L Click</strong>: Label<br>
+            <strong>ALT + L Click</strong>: Auto W/L<br>
             <strong>SHIFT + R Drag</strong>: Measure<br>
             <strong>Space</strong>: Change view<br>
             <strong>ALT</strong>: Hide Labels<br>
-            <strong>ALT + R Drag</strong>: Contrast<br>
             <strong>Q</strong>: MagicMode<br>
             <strong>Z</strong>: Undo<br>
+            <strong>R</strong>: Reset View<br>
             <strong>X</strong>: Save
         </div>
 
