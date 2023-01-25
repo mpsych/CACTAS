@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import scipy
+from sklearn import metrics
+
 
 class Util:
 
@@ -207,6 +209,35 @@ class Util:
     image_normalized = (image_normalized - image_normalized.min()) / (image_normalized.max() - image_normalized.min())
 
     return image_normalized
+
+  @staticmethod
+  def parse_folder(folder):
+    '''
+    '''
+    files = os.listdir(folder)
+    size1 = os.path.getsize(folder+'/'+files[0])
+    size2 = os.path.getsize(folder+'/'+files[1])
+    
+    if size1 < size2:
+        segmentation = files[0]
+        image = files[1]
+    else:
+        segmentation = files[1]
+        image = files[0]
+
+    return image, segmentation
+
+
+  @staticmethod
+  def jaccard(s1, s2):
+
+    similarity = metrics.jaccard_score(s1.ravel(), 
+                                       s2.ravel(),
+                                       average="binary")
+
+    return similarity
+
+
 
   @staticmethod
   def pad(images, labels, force_512=True, force_power_of_2=True, force_square=True, center=True):

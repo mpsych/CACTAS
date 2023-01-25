@@ -18,7 +18,7 @@ H.Drawer = function (viewer) {
 
   this.labelmap_buffer = null;
 
-  this.single_pixel_mode = false;
+  this.single_pixel_mode = null;
 
 };
 
@@ -136,9 +136,46 @@ H.Drawer.prototype.onMouseDown = function (e) {
 H.Drawer.prototype.onMouseMove = function (e) {
 
   if (e.ctrlKey) {
+
     this.nv.canvas.style.cursor = 'crosshair';
+
+  } else if (this.single_pixel_mode) {
+
+    var label = H.D.label;
+    if (this.single_pixel_mode == 'draw') {
+
+      this.nv.canvas.style.cursor = 'copy';
+
+    } else if (this.single_pixel_mode == 'erase') {
+
+      this.nv.canvas.style.cursor = 'help';
+      label = 0;
+
+    }
+
+    if (H.D.position) {
+
+      var i = H.D.position[0];
+      var j = H.D.position[1];
+      var k = H.D.position[2];
+
+      this.setLabelmapPixel(i, j, k, label);
+      
+      if (this.single_pixel_mode == 'draw') {
+        H.A.merge(i, j, k);
+      }
+
+      H.D.refresh();
+
+      // save NV undo map
+      H.V.nv.drawAddUndoBitmap();
+
+    } 
+
   } else {
+
     this.nv.canvas.style.cursor = 'default';
+  
   }
 
 };
@@ -162,52 +199,36 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
     H.V.updateWL(wl[0], wl[1], true);
 
-  }
-
-
-  if (e.ctrlKey) {
-
-    this.intensity = H.D.getVolumePixel(i, j, k);
-
-    H.A.threshold = this.intensity;
-    H.A.intensity_max = H.D.nv.back.global_max;
-    H.A.threshold_tolerance = H.D.tolerance;
-    H.A.label_to_draw = H.D.label;
-
-    H.A.grow(i, j, k);
-
-    H.D.refresh();
-
-    // save NV undo map
-    H.V.nv.drawAddUndoBitmap();
-
-    this.nv.canvas.style.cursor = 'default';
-
-  } else if (this.single_pixel_mode) {
-
-    let label;
-
-    // left mouse button
-    if (e.button == 0) {
-
-    this.setLabelmapPixel(i, j, k, H.D.label);
-    
-    H.A.merge(i, j, k);
-
-    // right mouse button
-    // TODO: this doesn't work because niivue doesn't update position on RMB.
-    // fix: decide on a different key combination(?)
-    } else if (e.button == 2) {
-
-      this.setLabelmapPixel(i, j, k, 0);
-
-    }
-
-
-
-    this.refresh();
+    return;
 
   }
+
+  if (!e.ctrlKey) return;
+
+  //
+  // REGION GROWING HERE // DEFAULT INTERACTION
+  //
+
+  var i = H.D.position[0];
+  var j = H.D.position[1];
+  var k = H.D.position[2];
+
+  this.intensity = H.D.getVolumePixel(i, j, k);
+
+  H.A.threshold = this.intensity;
+  H.A.intensity_max = H.D.nv.back.global_max;
+  H.A.threshold_tolerance = H.D.tolerance;
+  H.A.label_to_draw = H.D.label;
+
+  H.A.grow(i, j, k);
+
+  H.D.refresh();
+
+  // save NV undo map
+  H.V.nv.drawAddUndoBitmap();
+
+  this.nv.canvas.style.cursor = 'default';
+
 
 };
 
@@ -311,7 +332,15 @@ H.Drawer.prototype.onKeyDown = function(e) {
 
   } else if (e.key == 1) {
 
-    this.single_pixel_mode = true;
+    this.single_pixel_mode = 'draw';
+
+  } else if (e.key == 2) {
+
+    this.single_pixel_mode = 'erase';
+
+  } else {
+
+    this.single_pixel_mode = null;
 
   }
 
@@ -328,6 +357,10 @@ H.Drawer.prototype.onKeyUp = function(e) {
   } else if (e.key == 1) {
 
     this.single_pixel_mode = false;
+
+  } else if (e.key == 2) {
+
+    this.erase_single_pixel_mode = false;
 
   }
 
