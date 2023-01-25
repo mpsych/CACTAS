@@ -18,6 +18,8 @@ H.Drawer = function (viewer) {
 
   this.labelmap_buffer = null;
 
+  this.single_pixel_mode = false;
+
 };
 
 
@@ -116,11 +118,17 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
   }
 
-  if (!e.ctrlKey) return;
+  if (e.ctrlKey) {
 
-  this.nv.canvas.style.cursor = 'wait';
+    this.nv.canvas.style.cursor = 'wait';
 
-  H.D.label += 1;
+    H.D.label += 1;
+
+  } else if (this.single_pixel_mode) {
+    
+    H.D.label +=1;
+
+  }
 
 };
 
@@ -140,13 +148,13 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.D.leftDown = false;
 
+  var i = H.D.position[0];
+  var j = H.D.position[1];
+  var k = H.D.position[2];
+
   if (e.altKey) {
 
     // calculate specific W/L
-    var i = H.D.position[0];
-    var j = H.D.position[1];
-    var k = H.D.position[2];
-
     var intensity = H.D.getVolumePixel(i, j, k);
 
     // according to L. Saba 2009
@@ -156,27 +164,50 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   }
 
-  if (!e.ctrlKey) return;
 
-  var i = H.D.position[0];
-  var j = H.D.position[1];
-  var k = H.D.position[2];
+  if (e.ctrlKey) {
 
-  this.intensity = H.D.getVolumePixel(i, j, k);
+    this.intensity = H.D.getVolumePixel(i, j, k);
 
-  H.A.threshold = this.intensity;
-  H.A.intensity_max = H.D.nv.back.global_max;
-  H.A.threshold_tolerance = H.D.tolerance;
-  H.A.label_to_draw = H.D.label;
+    H.A.threshold = this.intensity;
+    H.A.intensity_max = H.D.nv.back.global_max;
+    H.A.threshold_tolerance = H.D.tolerance;
+    H.A.label_to_draw = H.D.label;
 
-  H.A.grow(i, j, k);
+    H.A.grow(i, j, k);
 
-  H.D.refresh();
+    H.D.refresh();
 
-  // save NV undo map
-  H.V.nv.drawAddUndoBitmap();
+    // save NV undo map
+    H.V.nv.drawAddUndoBitmap();
 
-  this.nv.canvas.style.cursor = 'default';
+    this.nv.canvas.style.cursor = 'default';
+
+  } else if (this.single_pixel_mode) {
+
+    let label;
+
+    // left mouse button
+    if (e.button == 0) {
+
+    this.setLabelmapPixel(i, j, k, H.D.label);
+    
+    H.A.merge(i, j, k);
+
+    // right mouse button
+    // TODO: this doesn't work because niivue doesn't update position on RMB.
+    // fix: decide on a different key combination(?)
+    } else if (e.button == 2) {
+
+      this.setLabelmapPixel(i, j, k, 0);
+
+    }
+
+
+
+    this.refresh();
+
+  }
 
 };
 
@@ -278,6 +309,10 @@ H.Drawer.prototype.onKeyDown = function(e) {
     H.V.nv.drawOpacity = 0.;
     H.V.nv.updateGLVolume();
 
+  } else if (e.key == 1) {
+
+    this.single_pixel_mode = true;
+
   }
 
 };
@@ -289,6 +324,10 @@ H.Drawer.prototype.onKeyUp = function(e) {
 
     H.V.nv.drawOpacity = 1.0;
     H.V.nv.updateGLVolume();
+
+  } else if (e.key == 1) {
+
+    this.single_pixel_mode = false;
 
   }
 
