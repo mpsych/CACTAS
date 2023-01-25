@@ -118,11 +118,17 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
   }
 
-  if (!e.ctrlKey) return;
+  if (e.ctrlKey) {
 
-  this.nv.canvas.style.cursor = 'wait';
+    this.nv.canvas.style.cursor = 'wait';
 
-  H.D.label += 1;
+    H.D.label += 1;
+
+  } else if (this.single_pixel_mode) {
+    
+    H.D.label +=1;
+
+  }
 
 };
 
@@ -142,13 +148,13 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   H.D.leftDown = false;
 
+  var i = H.D.position[0];
+  var j = H.D.position[1];
+  var k = H.D.position[2];
+
   if (e.altKey) {
 
     // calculate specific W/L
-    var i = H.D.position[0];
-    var j = H.D.position[1];
-    var k = H.D.position[2];
-
     var intensity = H.D.getVolumePixel(i, j, k);
 
     // according to L. Saba 2009
@@ -158,11 +164,8 @@ H.Drawer.prototype.onMouseUp = function (e) {
 
   }
 
-  if (e.ctrlKey) {
 
-    var i = H.D.position[0];
-    var j = H.D.position[1];
-    var k = H.D.position[2];
+  if (e.ctrlKey) {
 
     this.intensity = H.D.getVolumePixel(i, j, k);
 
@@ -179,6 +182,30 @@ H.Drawer.prototype.onMouseUp = function (e) {
     H.V.nv.drawAddUndoBitmap();
 
     this.nv.canvas.style.cursor = 'default';
+
+  } else if (this.single_pixel_mode) {
+
+    let label;
+
+    // left mouse button
+    if (e.button == 0) {
+
+    this.setLabelmapPixel(i, j, k, H.D.label);
+    
+    H.A.merge(i, j, k);
+
+    // right mouse button
+    // TODO: this doesn't work because niivue doesn't update position on RMB.
+    // fix: decide on a different key combination(?)
+    } else if (e.button == 2) {
+
+      this.setLabelmapPixel(i, j, k, 0);
+
+    }
+
+
+
+    this.refresh();
 
   }
 

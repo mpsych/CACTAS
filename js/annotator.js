@@ -159,3 +159,28 @@ H.Annotator.prototype.grow = function(i, j, k) {
   }
 };
 
+
+H.Annotator.prototype.merge = function(i, j, k) {
+
+  for (let n = 0; n < 6; n++) {
+    
+    let new_ijk = [
+      i + this.di[n],
+      j + this.dj[n],
+      k + this.dk[n],
+    ]
+
+    let neighbor_label = H.D.getLabelmapPixel(new_ijk[0], new_ijk[1], new_ijk[2]);
+
+    if (neighbor_label != H.D.label && neighbor_label != 0) {
+
+      H.D.setLabelmapPixel(i, j, k, neighbor_label);
+
+      return;
+
+    }
+
+  }
+
+};
+
