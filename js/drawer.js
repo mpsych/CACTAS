@@ -124,11 +124,7 @@ H.Drawer.prototype.onMouseDown = function (e) {
 
     H.D.label += 1;
 
-  } else if (this.single_pixel_mode) {
-    
-    H.D.label +=1;
-
-  }
+  } 
 
 };
 
@@ -161,14 +157,9 @@ H.Drawer.prototype.onMouseMove = function (e) {
 
       this.setLabelmapPixel(i, j, k, label);
       
-      if (this.single_pixel_mode == 'draw') {
-        H.A.merge(i, j, k);
-      }
-
-      H.D.refresh();
-
-      // save NV undo map
-      H.V.nv.drawAddUndoBitmap();
+      // if (this.single_pixel_mode == 'draw') {
+      //   H.A.merge(i, j, k);
+      // }
 
     } 
 
@@ -198,6 +189,18 @@ H.Drawer.prototype.onMouseUp = function (e) {
     var wl = [intensity*2.07, intensity*0.72];
 
     H.V.updateWL(wl[0], wl[1], true);
+
+    return;
+
+  }
+
+  if (this.single_pixel_mode) {
+
+    // only redraw if we were drawing or erasing
+    H.D.refresh();
+
+    // save NV undo map
+    H.V.nv.drawAddUndoBitmap();
 
     return;
 
@@ -354,15 +357,10 @@ H.Drawer.prototype.onKeyUp = function(e) {
     H.V.nv.drawOpacity = 1.0;
     H.V.nv.updateGLVolume();
 
-  } else if (e.key == 1) {
-
-    this.single_pixel_mode = false;
-
-  } else if (e.key == 2) {
-
-    this.erase_single_pixel_mode = false;
-
   }
+
+  this.single_pixel_mode = null;
+  this.nv.canvas.style.cursor = 'default';
 
 };
 
