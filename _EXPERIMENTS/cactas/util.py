@@ -131,6 +131,27 @@ class Util:
     return label_bin
 
   @staticmethod
+  def list_to_array(l):
+    '''assuming all elements same size
+    '''
+    count = len(l)
+
+    d_y = l[0].shape[0]
+    d_x = l[0].shape[1]
+
+    out = np.zeros((d_y, d_x, count), dtype=l[0].dtype)
+
+    for i in range(count):
+
+      c_d_y = min(d_y, l[i].shape[0])
+      c_d_x = min(d_x, l[i].shape[1])
+
+      out[0:c_d_y,0:c_d_x,i] = l[i][0:c_d_y,0:c_d_x,0]
+
+    return out
+
+
+  @staticmethod
   def view(image, label, alpha=0.7, title=None, vmin=-600, vmax=1000):
     '''
     '''
@@ -158,10 +179,11 @@ class Util:
 
       if slices > 1:
         plt.imshow(image[:,:,i], cmap='gray', vmin=vmin, vmax=vmax)
-        plt.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=0.7) 
+        plt.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=alpha) 
       else:
         plt.imshow(image, cmap='gray', vmin=vmin, vmax=vmax)
-        plt.imshow(masked, cmap='jet', interpolation='none', alpha=0.7) 
+        plt.imshow(masked, cmap='jet', interpolation='none', alpha=alpha) 
+
 
   @staticmethod
   def zoom(image, label, spacing, order=0):
