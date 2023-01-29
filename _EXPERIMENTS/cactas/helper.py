@@ -2,6 +2,7 @@ import keras, os
 import numpy as np
 
 import tensorflow.keras
+from tensorflow.keras.callbacks import EarlyStopping
 from keras_unet.models import custom_unet
 from keras_unet.utils import get_augmented
 from keras_unet.metrics import iou, iou_thresholded
@@ -65,14 +66,14 @@ class Helper:
     train_gen = get_augmented(
         X_train, y_train, batch_size=2,
         data_gen_args = dict(
-            rotation_range=5.,
-            width_shift_range=0.05,
-            height_shift_range=0.05,
-            shear_range=40,
-            zoom_range=0.2,
-            horizontal_flip=True,
-            vertical_flip=True,
-            fill_mode='constant'
+            # rotation_range=5.,
+            # width_shift_range=0.05,
+            # height_shift_range=0.05,
+            # shear_range=40,
+            # zoom_range=0.2,
+            # horizontal_flip=True,
+            # vertical_flip=True,
+            # fill_mode='constant'
         ))
 
     return train_gen
@@ -112,12 +113,34 @@ class Helper:
                   # loss=jaccard_distance,
                   metrics=[iou, iou_thresholded])
 
+
+    earlystopping = tensorflow.keras.callbacks.EarlyStopping(
+        monitor="val_iou_thresholded",
+        min_delta=0,
+        patience=30,
+        verbose=1,
+        mode="max",
+        baseline=None,
+        restore_best_weights=True,
+        # start_from_epoch=100
+    )
+
+
     batch_size = 32
-    history = model.fit_generator(train_gen, 
-                                  steps_per_epoch=len(X_train) // batch_size, 
-                                  validation_data=(X_val, y_val),
-                                  verbose=True,
-                                  epochs=epochs)
+    # history = model.fit_generator(train_gen, 
+    #                               steps_per_epoch=len(X_train) // batch_size, 
+    #                               validation_data=(X_val, y_val),
+    #                               verbose=True,
+    #                               epochs=epochs)
+    history = model.fit(X_train,
+                        y_train,
+                        batch_size=batch_size, 
+#                               steps_per_epoch=len(X_train) // batch_size, 
+                        validation_data=(X_val, y_val),
+#                               verbose=True,
+                        epochs=epochs,)
+                        # callbacks=[earlystopping])
+
 
     return model, history
 
