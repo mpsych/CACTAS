@@ -123,10 +123,11 @@ class Util:
 
 
   @staticmethod
-  def binarize(label):
+  def binarize(label, threshold=0):
 
     label_bin = label.copy().astype(np.bool_)
-    label_bin[label > 0] = 1
+    label_bin[:] = 0
+    label_bin[label > threshold] = 1
 
     return label_bin
 
@@ -255,7 +256,8 @@ class Util:
 
     similarity = metrics.jaccard_score(s1.ravel(), 
                                        s2.ravel(),
-                                       average="binary")
+                                       average="binary",
+                                       zero_division=1.0)
 
     return similarity
 

@@ -90,12 +90,12 @@ class Helper:
 
 
   @staticmethod
-  def train_unet(train_gen, X_train, y_train, X_val, y_val, epochs=100):
+  def create_unet(input_shape):
     '''
     '''
 
     model = custom_unet(
-        input_shape=X_train[0].shape,
+        input_shape=input_shape,
         num_classes=1,
         filters=64,
         use_batch_norm=False,
@@ -104,7 +104,6 @@ class Helper:
         num_layers=4,
         output_activation='sigmoid')
 
-    history = None
 
     opt = tensorflow.keras.optimizers.Adam(learning_rate=0.001)
 
@@ -124,6 +123,30 @@ class Helper:
         restore_best_weights=True,
         # start_from_epoch=100
     )
+
+    return model
+
+
+  @staticmethod
+  def load_unet(weightsfile='/raid/mpsych/CACTAS/unet_full_33_cases_weights.hdf5'):
+    '''
+    '''
+    model = Helper.create_unet((512,512,1))
+    model.load_weights('/raid/mpsych/CACTAS/unet_full_33_cases_weights.hdf5')
+
+    return model
+
+
+  @staticmethod
+  def train_unet(train_gen, X_train, y_train, X_val, y_val, epochs=100):
+    '''
+    '''
+
+
+    history = None
+
+
+    model = Helper.create_unet(X_train.shape[0])
 
 
     batch_size = 32
