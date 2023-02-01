@@ -187,6 +187,40 @@ class Util:
         plt.imshow(masked, cmap='jet', interpolation='none', alpha=alpha) 
 
 
+
+  @staticmethod
+  def view_grid(images, labels, vmin=0, vmax=1, alpha=0.7):
+    from mpl_toolkits.axes_grid1 import ImageGrid
+
+    masked = np.ma.masked_where(labels==0, labels)
+
+    fig = plt.figure(figsize=(15., 60.))
+    grid = ImageGrid(fig, 111,  # similar to subplot(111)
+                     nrows_ncols=(5, 20),  # creates 2x2 grid of axes
+                     axes_pad=0.01,  # pad between axes in inch.
+                     )
+
+    
+    for i,ax in enumerate(grid):
+      # ax.imshow(images[:,:,i])
+      plt.axis('off')
+
+      # if i % 3:
+        # ax.imshow(images[:,:,i], cmap='gray', vmin=vmin, vmax=vmax)
+      # elif i % 2:
+      ax.imshow(images[:,:,i], cmap='gray', vmin=vmin, vmax=vmax)
+      ax.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=alpha) 
+      # else:
+        # ax.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=alpha) 
+
+
+    # for ax, im in zip(grid, images):
+    #     # Iterating over the grid returns the Axes.
+    #     ax.imshow(im[:,:,0])
+
+
+
+
   @staticmethod
   def zoom(image, label, spacing, order=0):
     '''
