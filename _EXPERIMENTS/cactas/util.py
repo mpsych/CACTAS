@@ -7,6 +7,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import scipy
 from sklearn import metrics
+from scipy import stats
 
 
 class Util:
@@ -323,3 +324,61 @@ class Util:
         currentslice += 1
 
     return padded_images, padded_labels
+
+
+  @staticmethod 
+  def boxplot(all_data, labels, y_label='Time [s]', y_lim_min=0, y_lim=1000, title=None, outputdir='/home/d/Dropbox/RESEARCH/CAROTID/PLOTS/'):
+
+    matplotlib.rcParams.update({'font.size': 32})
+    plt.rc('axes', labelsize=48)    # fontsize of the x and y labels
+    plt.rc('legend', fontsize=32)   
+    plt.rc('xtick', labelsize=42) 
+
+    # fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=1, figsize=(9, 4))
+    fig = plt.figure(figsize=(7, 13))
+    ax = fig.gca()
+    # ax1 = plt.gcf()
+    boxprops = dict(color="black",linewidth=1.5)
+    medianprops = dict(color="black",linewidth=1.5)
+    # rectangular box plot
+    bplot1 = plt.boxplot(all_data,
+                         vert=True,  # vertical box alignment
+                         patch_artist=True,  # fill with color
+                         labels=labels,
+                         boxprops=boxprops,
+                         medianprops=medianprops)  # will be used to label x-ticks
+
+    # fill with colors
+    colors = ['#af8dc3', '#7fbf7b']
+    # for bplot in (bplot1, bplot2):
+    for patch, color in zip(bplot1['boxes'], colors):
+        patch.set_facecolor(color)
+
+    ax.set_ylabel(y_label)
+    ax.set_ylim(y_lim_min,y_lim)
+
+    titleb = title
+    if not title:
+      titleb = 'figure.pdf'
+
+
+
+    filename_pdf = outputdir+'/'+titleb.replace(' ','_').replace(',','')+'.pdf'
+    filename_png = outputdir+'/'+titleb.replace(' ','_').replace(',','')+'.png'
+    plt.savefig(filename_pdf,bbox_inches='tight')
+    plt.savefig(filename_png,bbox_inches='tight')
+
+    if title:
+      plt.title(title)
+
+
+    plt.show()
+
+
+
+    print(labels[0], np.mean(all_data[0]),'+/-', np.std(all_data[0]))
+    print(labels[1], np.mean(all_data[1]),'+/-', np.std(all_data[1]))
+
+    ttest = stats.ttest_ind(all_data[0],all_data[1])
+
+    print('t_'+str(len(all_data[0]+all_data[1])), '=', str(round(ttest[0],3)), ',p=',str(round(ttest[1],2)))
