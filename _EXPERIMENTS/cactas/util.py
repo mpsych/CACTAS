@@ -189,7 +189,7 @@ class Util:
 
 
   @staticmethod
-  def view_grid(images, labels, vmin=0, vmax=1, alpha=0.7):
+  def view_grid(images, labels, vmin=0, vmax=1, alpha=0.7, color='gist_rainbow'):
     from mpl_toolkits.axes_grid1 import ImageGrid
 
     masked = np.ma.masked_where(labels==0, labels)
@@ -209,7 +209,7 @@ class Util:
         # ax.imshow(images[:,:,i], cmap='gray', vmin=vmin, vmax=vmax)
       # elif i % 2:
       ax.imshow(images[:,:,i], cmap='gray', vmin=vmin, vmax=vmax)
-      ax.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=alpha) 
+      ax.imshow(masked[:,:,i], cmap=color, interpolation='none', alpha=alpha) 
       # else:
         # ax.imshow(masked[:,:,i], cmap='jet', interpolation='none', alpha=alpha) 
 
