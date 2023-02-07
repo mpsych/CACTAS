@@ -364,7 +364,7 @@ class Util:
   def boxplot(all_data, labels, y_label='Time [s]', y_lim_min=0, y_lim=1000, title=None, outputdir='/home/d/Dropbox/RESEARCH/CAROTID/PLOTS/'):
 
     matplotlib.rcParams.update({'font.size': 32})
-    plt.rc('axes', labelsize=48)    # fontsize of the x and y labels
+    plt.rc('axes', labelsize=65)    # fontsize of the x and y labels
     plt.rc('legend', fontsize=32)   
     plt.rc('xtick', labelsize=42) 
 
