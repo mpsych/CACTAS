@@ -15,7 +15,7 @@ H.Viewer = function(element, url) {
   nv.attachToCanvas(element);
 
   //set default view to coronal
-  // nv.setSliceType(nv.sliceTypeCoronal);
+  nv.setSliceType(nv.sliceTypeCoronal);
   
   // crosshair
   nv.setCrosshairColor([0, 1, 1, 0.1]);
