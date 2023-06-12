@@ -319,10 +319,29 @@ H.Drawer.prototype.onKeyPress = function(e) {
     }
 
 
+  } else if (e.code == 'KeyC') {
 
+    // TODO finish implementing connected components (not working)
+
+      console.log("connected components");
+
+      this.labelmap_buffer = H.V.nv.drawBitmap.slice();
+
+      var components = new cv.Mat();
+      var labels = cv.matFromArray(H.V.nv.drawBitmap.length, 1, cv.CV_8UC1, H.V.nv.drawBitmap);
+
+      cv.connectedComponents(labels, components, 8);
+
+      H.V.nv.drawBitmap = components.data;
+
+      // empty?
+      console.log(H.V.nv.drawBitmap);
+
+      H.V.nv.refreshDrawing();
+      H.V.nv.updateGLVolume();
   }
 
-
+  
 };
 
 
