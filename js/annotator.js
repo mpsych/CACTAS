@@ -35,6 +35,24 @@ H.Annotator = function () {
 
 
 H.Annotator.prototype.grow = function(i, j, k) {
+  let intensity = this.getVolumePixel(i, j, k);
+
+  console.log(intensity);
+  console.log(this.threshold);
+
+  
+  let mn = intensity * (this.threshold_tolerance / 100);
+  let mx = intensity + this.threshold;
+
+  H.D.nv.drawPt(...[i,j,k], H.D.label);
+
+  H.D.nv.drawFloodFill([i, j, k], 0, 1, mn, mx);
+
+  H.D.nv.refreshDrawing(1);
+}
+
+
+H.Annotator.prototype._grow = function(i, j, k) {
 
   // inspired by
   // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
@@ -134,29 +152,31 @@ H.Annotator.prototype.grow = function(i, j, k) {
 
   // merge labels
   // only if there are labels to merge
-  if (Object.keys(this.labels_to_merge).length > 0) {
+  // if (Object.keys(this.labels_to_merge).length > 0) {
 
-    let label_color_to_inherit = Object.keys(this.labels_to_merge)[0];
-    let current_label = H.D.label;
+  //   let label_color_to_inherit = Object.keys(this.labels_to_merge)[0];
+  //   let current_label = H.D.label;
 
-    // a list of all labels that need to be the same color
-    // current label + all labels that were merged
-    let labels_to_relabel = [current_label.toString(), ...Object.keys(this.labels_to_merge)];
+  //   // a list of all labels that need to be the same color
+  //   // current label + all labels that were merged
+  //   let labels_to_relabel = [current_label.toString(), ...Object.keys(this.labels_to_merge)];
 
-    for (let label of labels_to_relabel) {
+  //   for (let label of labels_to_relabel) {
 
-        console.log(`Relabling ${label}`);
+  //       console.log(`Relabling ${label}`);
 
-        for (let pt of this.labels[label]) {
+  //       for (let pt of this.labels[label]) {
 
-          let i, j, k;
+  //         let i, j, k;
 
-          [i, j, k] = pt;
+  //         [i, j, k] = pt;
 
-          this.setLabelmapPixel(i, j, k, label_color_to_inherit);
-      }
-    }
-  }
+  //         this.setLabelmapPixel(i, j, k, label_color_to_inherit);
+  //     }
+  //   }
+  // }
+
+
 };
 
 
