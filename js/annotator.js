@@ -35,7 +35,6 @@ H.Annotator = function () {
 
 
 H.Annotator.prototype._grow = function(i, j, k) {
-  console.time("niivue builtin growing");
   let intensity = this.getVolumePixel(i, j, k);
   
   let mn = intensity * (this.threshold_tolerance / 100);
@@ -46,7 +45,6 @@ H.Annotator.prototype._grow = function(i, j, k) {
   H.D.nv.drawFloodFill([i, j, k], 0, 1, mn, mx);
 
   H.D.nv.refreshDrawing(1);
-  console.timeEnd("niivue builtin growing");
 }
 
 
