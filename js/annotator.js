@@ -34,7 +34,8 @@ H.Annotator = function () {
 };
 
 
-H.Annotator.prototype.grow = function(i, j, k) {
+H.Annotator.prototype._grow = function(i, j, k) {
+  console.time("niivue builtin growing");
   let intensity = this.getVolumePixel(i, j, k);
 
   console.log(intensity);
@@ -49,14 +50,16 @@ H.Annotator.prototype.grow = function(i, j, k) {
   H.D.nv.drawFloodFill([i, j, k], 0, 1, mn, mx);
 
   H.D.nv.refreshDrawing(1);
+  console.timeEnd("niivue builtin growing");
 }
 
 
-H.Annotator.prototype._grow = function(i, j, k) {
+H.Annotator.prototype.grow = function(i, j, k) {
 
   // inspired by
   // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
 
+  console.time("custom growing");
 
   this.visited = [];
 
@@ -176,6 +179,7 @@ H.Annotator.prototype._grow = function(i, j, k) {
   //   }
   // }
 
+  console.timeEnd("custom growing");
 
 };
 

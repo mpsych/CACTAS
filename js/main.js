@@ -29,6 +29,19 @@ window.onload = function() {
   H.A.getLabelmapPixel = H.D.getLabelmapPixel;
   H.A.getVolumePixel = H.D.getVolumePixel;
   H.A.getVolumeDimensions = H.D.getVolumeDimensions;
-
 };
 
+function growingBenchmark() {
+  let evt = new MouseEvent("click", {
+    clientX: 568,
+    clientY: 354,
+    ctrlKey: true
+  });
+
+  let viewer = document.getElementById('viewer');
+
+  // for (let x = 0; x < 1; x++) {
+  //   viewer.dispatchEvent(evt);
+  //   console.log("a");
+  // }
+}
