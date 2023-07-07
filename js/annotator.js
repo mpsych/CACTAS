@@ -37,10 +37,6 @@ H.Annotator = function () {
 H.Annotator.prototype._grow = function(i, j, k) {
   console.time("niivue builtin growing");
   let intensity = this.getVolumePixel(i, j, k);
-
-  console.log(intensity);
-  console.log(this.threshold);
-
   
   let mn = intensity * (this.threshold_tolerance / 100);
   let mx = intensity + this.threshold;
@@ -59,7 +55,6 @@ H.Annotator.prototype.grow = function(i, j, k) {
   // inspired by
   // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
 
-  console.time("custom growing");
 
   this.visited = [];
 
@@ -179,7 +174,6 @@ H.Annotator.prototype.grow = function(i, j, k) {
   //   }
   // }
 
-  console.timeEnd("custom growing");
 
 };
 
