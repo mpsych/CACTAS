@@ -212,6 +212,8 @@ H.Drawer.prototype.onMouseUp = function (e) {
   // REGION GROWING HERE // DEFAULT INTERACTION
   //
 
+  console.log(e.clientY, e.clientX);
+
   var i = H.D.position[0];
   var j = H.D.position[1];
   var k = H.D.position[2];
@@ -222,6 +224,8 @@ H.Drawer.prototype.onMouseUp = function (e) {
   H.A.intensity_max = H.D.nv.back.global_max;
   H.A.threshold_tolerance = H.D.tolerance;
   H.A.label_to_draw = H.D.label;
+
+  console.log(i,j,k);
 
   H.A.grow(i, j, k);
 
@@ -386,7 +390,7 @@ H.Drawer.prototype.onKeyUp = function(e) {
 
 H.Drawer.prototype.refresh = function() {
 
-  H.D.nv.refreshDrawing();
+  H.D.nv.refreshDrawing(true);
 
   var unique_labels = [... new Set(H.D.nv.drawBitmap)].length-1;
 
