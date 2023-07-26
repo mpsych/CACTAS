@@ -34,7 +34,7 @@ H.Annotator = function () {
 };
 
 
-H.Annotator.prototype._grow = function(i, j, k) {
+H.Annotator.prototype.grow = function(i, j, k) {
   let intensity = this.getVolumePixel(i, j, k);
   
   let mn = intensity * (this.threshold_tolerance / 100);
@@ -48,7 +48,7 @@ H.Annotator.prototype._grow = function(i, j, k) {
 }
 
 
-H.Annotator.prototype.grow = function(i, j, k) {
+H.Annotator.prototype._grow = function(i, j, k) {
 
   // inspired by
   // https://github.com/effepivi/ICP3038/blob/master/Lectures/8-Segmentation/notebooks/3-region-growing-opencv.ipynb
