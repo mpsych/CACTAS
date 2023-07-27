@@ -17,11 +17,12 @@ CACTAS(Carotid Artery-Computed Tomographic Angiography Scoring) project is an op
 CACTAS-Tool is a web-based single-click annotation tool that is 2.89 times faster than manual segmentation. We perform 3D region growing based on a user-selected CT Hounsfield Unit (HU) intensity with a configurable tolerance threshold to include neighboring voxels. Visualization was set to window/level of 130/1500 HU.
 
 Here is an example of CACTAS-Tool: <br/>
-![Screen Shot 2023-07-18 at 3 59 33 PM](https://github.com/jiehyunjkim/CACTAS/assets/54910137/4c27601c-caf2-4c4d-bb6a-20977d0c9ae3)
+![picture01](https://github.com/jiehyunjkim/CACTAS/assets/54910137/99dd9218-b05c-4698-888f-de9d1e9695a1)
+
 
 Plaque annotations with CTOOL were faster than with 3D Slicer (expert w/ CTOOL 376.6±113.52s vs 631.2±325.88s, novice w/ CTOOL 126.59±21.57s vs 366.09±16.77s, t4=-12.40, p<0.0001). Annotation accuracy between both softwares was comparable (expert Jaccard w/ CTOOL 0.537±0.077 vs 0.464±0.238, novice Jaccard w/ CTOOL 0.481±0.070 vs 0.496±0.060). However, novice annotations will require expert validation or proofreading. All participants completed the NASA-TLX questionnaire to reveal lower mental, physical, and temporal demand with our software (expert w/ CTOOL 12.67 vs 16.334, novice w/ CTOOL 28.33±30.880 vs 33.33±14.727). Our streamlined plaque labeling software allows 2.89x faster annotations (1.68x for experts) with comparable accuracy to manual segmentation. <br/>
 
-![Figure01](https://github.com/jiehyunjkim/CACTAS/assets/54910137/76e7464a-3524-47e9-9a1c-d5d82810d0d0)
+![figure01](https://github.com/jiehyunjkim/CACTAS/assets/54910137/7104f2be-7d8c-44dc-91f6-b36e11bf04a8)
 
 
 ## Auto Detection Tool
@@ -59,7 +60,8 @@ Random Forest: <br/>
 The abstract of the CACTAS-Tool is accepted by The Society of Cardiovascular Computed Tomography(SCCT). <br/>
 
 Here is a poster for the presentation: <br/>
-![SCCT_Poster](https://github.com/jiehyunjkim/CACTAS/assets/54910137/7bb758ac-0377-4a41-9754-4d10541f6eee)<br/>
+![SCCT_Poster](https://github.com/jiehyunjkim/CACTAS/assets/54910137/37654d14-a77f-472f-a010-83eb6140cae5)<br/>
+
 
 ## Citation
 If you use this code in your research, please cite the following article:
