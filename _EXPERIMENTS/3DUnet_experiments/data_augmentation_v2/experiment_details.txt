@@ -1,0 +1,4 @@
+64^3 pixel volumes extracted around CA segmentation
+input values normalized to [0,1]
+no weights
+Data Augmentation only on plaque present patches. Random affine transform in xy and xz planes

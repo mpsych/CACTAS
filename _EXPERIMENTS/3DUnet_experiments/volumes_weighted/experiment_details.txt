@@ -1,0 +1,2 @@
+64^3 pixel volumes extracted around CA segmentation
+CA segmentation used as weight for model loss - [0,0] when not within CA mask, [1,1] within mask

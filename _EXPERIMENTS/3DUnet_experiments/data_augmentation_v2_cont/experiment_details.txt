@@ -1,0 +1,5 @@
+64^3 pixel volumes extracted around CA segmentation
+input values normalized to [0,1]
+no weights
+Data Augmentation only on plaque present patches. Random affine transform in xy and xz planes
+continuation of best checkpoint of data_augmentation_v2 (cp 176) with lower learning rate (tbd)
