@@ -67,16 +67,27 @@ H.Viewer.prototype.setupWLSlider = function(v) {
   // setup WL slider
   var slider = document.getElementById('wlslider');
 
-  noUiSlider.create(slider, {
-      start: [v.global_min, v.global_max],
-      behaviour: 'drag',
-      connect: true,
+  // Reuse existing slider if present; update its range for the new volume
+  if (slider.noUiSlider) {
+    slider.noUiSlider.updateOptions({
       range: {
-          'min': v.global_min,
-          'max': v.global_max
-      },
+        'min': v.global_min,
+        'max': v.global_max
+      }
+    }, false);
+    H.V.sliderWL = slider;
+  } else {
+    noUiSlider.create(slider, {
+        start: [v.global_min, v.global_max],
+        behaviour: 'drag',
+        connect: true,
+        range: {
+            'min': v.global_min,
+            'max': v.global_max
+        },
 
-  });
+    })
+  };
 
 
   H.V.sliderWL = slider;
@@ -131,4 +142,3 @@ H.Viewer.prototype.reset = function() {
   H.V.updateWL(wl[0], wl[1], true); // propagate to UI + volume
 
 };
-
