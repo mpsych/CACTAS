@@ -37,7 +37,9 @@ H.Annotator = function () {
 H.Annotator.prototype.grow = function(i, j, k) {
   let intensity = this.getVolumePixel(i, j, k);
   
-  let mn = intensity * (this.threshold_tolerance / 100);
+  // More restrictive bounds to prevent growing into bone/tissues
+  let tolerance_factor = this.threshold_tolerance / 100;
+  let mn = intensity * (1 - tolerance_factor);  // Lower bound: intensity - tolerance
   let mx = intensity + this.threshold;
 
   H.D.nv.drawPt(...[i,j,k], H.D.label);
